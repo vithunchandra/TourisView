@@ -15,4 +15,17 @@
     <string name="logout">Logout</string>
     <string name="bookmark">Bookmark</string>
     <string name="history">History</string>
+    <string name="gallery">Gallery</string>
+    <string name="camera">Camera</string>
+    <string name="latitude">Latitude</string>
+    <string name="longitude">Longitude</string>
+    <string name="description">Description</string>
+    <string name="camera_failed">Failed to load the camera</string>
+    <string name="capture_failed">Failed to take picture</string>
+    <string name="upload">Upload</string>
+    <string name="title_activity_select_location">SelectLocationActivity</string>
+    <string name="map_input">Map input</string>
+    <string name="select_location">Select Location</string>
+    <string name="empty_gallery_result">No photo have been selected yet</string>
+    <string name="scene_picture">Scene Picture</string>
 </resources>

@@ -1,60 +1,141 @@
 package com.mdp.tourisview.ui.main.upload
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.net.toUri
+import androidx.fragment.app.viewModels
 import com.mdp.tourisview.R
+import com.mdp.tourisview.databinding.FragmentUploadBinding
+import com.mdp.tourisview.ui.main.camera.CameraActivity
+import com.mdp.tourisview.ui.main.map.SelectLocationActivity
+import com.mdp.tourisview.util.TextChangedListener
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [UploadFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class UploadFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private lateinit var binding: FragmentUploadBinding
+    private val viewModel by viewModels<UploadFragmentViewModel>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+    private val registerForLocationResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ){
+        if(it.resultCode == SelectLocationActivity.LOCATION_RESULT){
+            val latitude = it.data?.getDoubleExtra(SelectLocationActivity.LATITUDE, 0.0)
+            val longitude = it.data?.getDoubleExtra(SelectLocationActivity.LONGITUDE, 0.0)
+            binding.latitudeEt.setText(latitude.toString())
+            binding.longitudeEt.setText(longitude.toString())
+        }
+    }
+
+    private val launcherGallery = registerForActivityResult(
+        ActivityResultContracts.PickVisualMedia()
+    ){ uri: Uri? ->
+        if(uri != null){
+            viewModel.setImageUri(uri)
+        }else{
+            showToast(getString(R.string.empty_gallery_result))
+        }
+    }
+
+    private val launcherIntentCameraX = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ){
+        if(it.resultCode == CameraActivity.CAMERAX_RESULT){
+            val uri: Uri = it.data?.getStringExtra(CameraActivity.EXTRA_CAMERAX_IMAGE)?.toUri()!!
+            viewModel.setImageUri(uri)
         }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_upload, container, false)
+        binding = FragmentUploadBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment UploadFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            UploadFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setUpState()
+        setUpField()
+        setUpAction()
+    }
+
+    private fun setUpField(){
+        binding.nameEt.addTextChangedListener(
+            object: TextChangedListener(){
+                override fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) {
+                    viewModel.setName(text.toString())
                 }
             }
+        )
+
+        binding.descriptionEt.addTextChangedListener(
+            object: TextChangedListener(){
+                override fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) {
+                    viewModel.setDescription(text.toString())
+                }
+            }
+        )
+
+        binding.latitudeEt.addTextChangedListener(
+            object: TextChangedListener(){
+                override fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) {
+                    if(text?.isNotEmpty() == true){
+                        viewModel.setLatitude(text.toString().toDouble())
+                    }
+                }
+            }
+        )
+
+        binding.longitudeEt.addTextChangedListener(
+            object: TextChangedListener(){
+                override fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) {
+                    if(text?.isNotEmpty() == true){
+                        viewModel.setLongitude(text.toString().toDouble())
+                    }
+                }
+            }
+        )
+    }
+
+    private fun setUpAction(){
+        binding.galleryButton.setOnClickListener {
+            launcherGallery.launch(
+                PickVisualMediaRequest(
+                    ActivityResultContracts.PickVisualMedia.ImageOnly
+                )
+            )
+        }
+
+        binding.cameraButton.setOnClickListener {
+            val intent = Intent(requireActivity(), CameraActivity::class.java)
+            launcherIntentCameraX.launch(intent)
+        }
+
+        binding.selectCoordinateButton.setOnClickListener {
+            val intent = Intent(requireContext(), SelectLocationActivity::class.java)
+            registerForLocationResult.launch(intent)
+        }
+    }
+
+    private fun setUpState(){
+        viewModel.viewState.observe(viewLifecycleOwner){ state ->
+            if(state.imageUri != null){
+                binding.imageViewer.setImageURI(state.imageUri)
+            }
+        }
+    }
+
+    private fun showToast(text: String){
+        Toast.makeText(requireContext(), text, Toast.LENGTH_SHORT).show()
     }
 }
