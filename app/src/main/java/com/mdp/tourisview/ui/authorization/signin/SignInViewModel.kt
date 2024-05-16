@@ -55,21 +55,23 @@ class SignInViewModel(
                         isError = false,
                         errorMessage = ""
                     )
-                    saveSession(
-                        UserModel(
-                            email = result.data.email,
-                            displayName = result.data.displayName,
-                            isLogin = true
-                        )
-                    )
                 }
             }
         }
     }
 
-    private fun saveSession(user: UserModel){
-        viewModelScope.launch {
-            sessionRepository.saveSession(user)
+    fun saveSession(){
+        val tempEmail = _viewState.value?.data?.email
+        val tempName = _viewState.value?.data?.email
+        if(tempEmail != null && tempName != null){
+            val user = UserModel(
+                email = tempEmail,
+                displayName = tempName,
+                isLogin = true
+            )
+            viewModelScope.launch {
+                sessionRepository.saveSession(user)
+            }
         }
     }
 

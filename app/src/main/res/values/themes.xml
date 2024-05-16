@@ -6,7 +6,7 @@
     </style>
 
     <style name="Theme.TourisView" parent="Base.Theme.TourisView" >
-        <item name="colorPrimary">@color/dark_slate</item>
+        <item name="colorPrimary">@color/blue</item>
         <item name="colorOnPrimary">@color/white</item>
         <item name="backgroundTint">@color/platinum</item>
     </style>

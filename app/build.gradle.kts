@@ -58,4 +58,5 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
     implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.circleimageview)
 }

@@ -20,6 +20,7 @@ class SignInFragment : Fragment() {
     private val viewModel by viewModels<SignInViewModel>{
         SignInViewModelFactory.getInstance(requireActivity())
     }
+    private var isLogin = false
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -37,16 +38,17 @@ class SignInFragment : Fragment() {
     }
 
     private fun setUpState(){
-        viewModel.getSession().observe(requireActivity()){
-            if(it.isLogin){
+        viewModel.getSession().observe(viewLifecycleOwner){
+            if(!isLogin && it.isLogin){
                 val intent = Intent(requireActivity(), MainActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                 startActivity(intent)
                 findNavController().popBackStack()
+                requireActivity().finish()
             }
         }
 
-        viewModel.viewState.observe(requireActivity()){
+        viewModel.viewState.observe(viewLifecycleOwner){
             when(it.isLoading){
                 true -> {
                     binding.progressBar.visibility = View.VISIBLE
@@ -68,7 +70,10 @@ class SignInFragment : Fragment() {
                             val intent = Intent(requireActivity(), MainActivity::class.java)
                             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                             startActivity(intent)
+                            isLogin = true
+                            viewModel.saveSession()
                             findNavController().popBackStack()
+                            requireActivity().finish()
                         }
                         create()
                         show()

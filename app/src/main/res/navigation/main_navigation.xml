@@ -25,17 +25,20 @@
         app:destination="@id/homeFragment"
         app:enterAnim="@anim/nav_default_enter_anim"
         app:popUpToInclusive="true"
-        app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        app:popExitAnim="@anim/nav_default_pop_exit_anim"
+        app:launchSingleTop="true" />
     <action
         android:id="@+id/action_global_uploadFragment"
         app:destination="@id/uploadFragment"
         app:enterAnim="@anim/nav_default_enter_anim"
         app:popUpToInclusive="true"
-        app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        app:popExitAnim="@anim/nav_default_pop_exit_anim"
+        app:launchSingleTop="true" />
     <action
         android:id="@+id/action_global_profileFragment"
         app:destination="@id/profileFragment"
         app:enterAnim="@anim/nav_default_enter_anim"
         app:popUpToInclusive="true"
-        app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        app:popExitAnim="@anim/nav_default_pop_exit_anim"
+        app:launchSingleTop="true" />
 </navigation>
