@@ -17,7 +17,7 @@ class MainActivityViewModel(private val sessionRepository: SessionRepository): V
     }
 }
 
-class MainActivityViewModelFactory(
+class MainActivityViewModelFactory private constructor(
     private val sessionRepository: SessionRepository
 ): ViewModelProvider.NewInstanceFactory(){
     @Suppress("UNCHECKED_CAST")

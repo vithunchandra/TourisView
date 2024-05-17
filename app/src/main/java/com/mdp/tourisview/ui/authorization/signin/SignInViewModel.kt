@@ -80,7 +80,7 @@ class SignInViewModel(
     }
 }
 
-class SignInViewModelFactory(
+class SignInViewModelFactory private constructor(
     private val sessionRepository: SessionRepository,
     private val authRepository: AuthRepository
 ): ViewModelProvider.NewInstanceFactory(){

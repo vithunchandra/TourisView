@@ -28,4 +28,6 @@
     <string name="select_location">Select Location</string>
     <string name="empty_gallery_result">No photo have been selected yet</string>
     <string name="scene_picture">Scene Picture</string>
+    <string name="destination_name">Destination Name</string>
+    <string name="error">Something went wrong</string>
 </resources>

@@ -56,7 +56,7 @@ class SignUpViewModel(
    }
 }
 
-class SignUpViewModelFactory(
+class SignUpViewModelFactory private constructor(
     private val authRepository: AuthRepository
 ): ViewModelProvider.NewInstanceFactory(){
     @Suppress("UNCHECKED_CAST")

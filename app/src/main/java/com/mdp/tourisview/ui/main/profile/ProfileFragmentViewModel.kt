@@ -24,7 +24,7 @@ class ProfileFragmentViewModel(private val sessionRepository: SessionRepository)
     }
 }
 
-class ProfileFragmentViewModelFactory(
+class ProfileFragmentViewModelFactory private constructor(
     private val sessionRepository: SessionRepository
 ): ViewModelProvider.NewInstanceFactory(){
     @Suppress("UNCHECKED_CAST")

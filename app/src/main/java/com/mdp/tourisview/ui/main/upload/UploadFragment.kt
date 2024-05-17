@@ -12,6 +12,7 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.mdp.tourisview.R
 import com.mdp.tourisview.databinding.FragmentUploadBinding
 import com.mdp.tourisview.ui.main.camera.CameraActivity
@@ -20,7 +21,9 @@ import com.mdp.tourisview.util.TextChangedListener
 
 class UploadFragment : Fragment() {
     private lateinit var binding: FragmentUploadBinding
-    private val viewModel by viewModels<UploadFragmentViewModel>()
+    private val viewModel by viewModels<UploadFragmentViewModel>{
+        UploadFragmentViewModelFactory.getInstance(requireActivity().baseContext)
+    }
 
     private val registerForLocationResult = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -125,12 +128,33 @@ class UploadFragment : Fragment() {
             val intent = Intent(requireContext(), SelectLocationActivity::class.java)
             registerForLocationResult.launch(intent)
         }
+
+        binding.uploadButton.setOnClickListener {
+            viewModel.upload()
+        }
     }
 
     private fun setUpState(){
-        viewModel.viewState.observe(viewLifecycleOwner){ state ->
+        viewModel.viewState.observe(requireActivity()){ state ->
             if(state.imageUri != null){
                 binding.imageViewer.setImageURI(state.imageUri)
+            }
+
+            if(state.isLoading){
+                binding.progressBar.visibility = View.VISIBLE
+                binding.uploadButton.text = ""
+            }else{
+                binding.progressBar.visibility = View.INVISIBLE
+                binding.uploadButton.text = getString(R.string.upload)
+            }
+
+            when{
+                state.isError -> showToast(state.errorMessage)
+                state.isSuccess -> {
+                    val directions = UploadFragmentDirections.actionGlobalHomeFragment()
+                    showToast("Upload Success")
+                    findNavController().navigate(directions)
+                }
             }
         }
     }
