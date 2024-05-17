@@ -13,6 +13,7 @@ object ApiConfig {
             .build()
         val retrofit = Retrofit.Builder()
             .baseUrl("https://story-api.dicoding.dev/v1/")
+//            .baseUrl("https://decent-mullet-severely.ngrok-free.app/")
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build()
