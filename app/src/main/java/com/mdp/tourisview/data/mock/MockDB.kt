@@ -1,5 +1,6 @@
 package com.mdp.tourisview.data.mock
 
+import android.net.Uri
 import com.mdp.tourisview.data.api.ApiConfig
 import com.mdp.tourisview.data.api.model.SignInResult
 import com.mdp.tourisview.data.api.model.SignUpResult
@@ -60,4 +61,27 @@ object MockDB {
 //            throw e
 //        }
 //    }
+
+    suspend fun uploadDestination(
+        name: String, image: Uri, description: String,
+        latitude: Double, longitude: Double, poster: String
+    ): UploadDestinationResult{
+        delay(2000)
+        val newDestination = Destination(
+            name = name, imageUri = image,
+            description = description, latitude = latitude,
+            longitude = longitude, like = 0,
+            poster = poster
+        )
+        destinations.add(newDestination)
+        return UploadDestinationResult(
+            message = "Destination uploaded successfully",
+            data = newDestination
+        )
+    }
+
+    suspend fun getAllDestinations(): List<Destination>{
+        delay(2000)
+        return destinations
+    }
 }
