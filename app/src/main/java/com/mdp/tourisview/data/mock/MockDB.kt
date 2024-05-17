@@ -1,5 +1,6 @@
 package com.mdp.tourisview.data.mock
 
+import com.mdp.tourisview.data.api.ApiConfig
 import com.mdp.tourisview.data.api.model.SignInResult
 import com.mdp.tourisview.data.api.model.SignUpResult
 import com.mdp.tourisview.data.mock.model.User
@@ -19,6 +20,18 @@ object MockDB {
         )
     }
 
+//    suspend fun login(email: String, password: String): SignInResult{
+//        // login using backend
+//        val apiService = ApiConfig.getApiService()
+//        return try {
+//            val response = apiService.login(email, password)
+//            SignInResult(response.email, response.displayName)
+//        } catch (e: Exception) {
+//            throw e
+//        }
+//
+//    }
+
     suspend fun register(email: String, password: String, displayName: String): SignUpResult{
         delay(2000)
         val user = User(
@@ -32,4 +45,15 @@ object MockDB {
             displayName = displayName
         )
     }
+
+//    suspend fun register(email: String, password: String, displayName: String): SignUpResult{
+//        // register using backend
+//        val apiService = ApiConfig.getApiService()
+//        return try {
+//            val response = apiService.register(email, password, displayName)
+//            SignUpResult(response.email, response.displayName)
+//        } catch (e: Exception) {
+//            throw e
+//        }
+//    }
 }
