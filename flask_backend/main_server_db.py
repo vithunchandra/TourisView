@@ -1,7 +1,10 @@
 from pyngrok import ngrok
 import requests
 import mysql.connector
+import json 
+import os
 from flask import Flask, request, send_from_directory, abort
+
 
 from util_db import *
 
@@ -61,6 +64,19 @@ def register() :
         result_json = json.dumps(result[0])
         
         return result_json
+    
+@app.route('/image', methods=['GET'])
+def get_image():
+    filepath = request.form['filepath']
+    print(filepath)
+    picture_exist = os.path.exists(filepath)
+    print(picture_exist)
+    
+    if picture_exist:
+        filepath = filepath.replace("./uploaded/","")
+        return send_from_directory('uploaded', filepath)  # Specify subfolder
+    else :
+        return abort(404)
 
 if __name__ == "__main__":
     ngrok_tunnel = ngrok.connect(PORT, domain= f"{subdomain}.ngrok-free.app")  # Assuming Flask app is running on port 5000
