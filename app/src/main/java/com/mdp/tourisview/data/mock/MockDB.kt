@@ -84,4 +84,16 @@ object MockDB {
         delay(2000)
         return destinations
     }
+
+//    suspend fun getAllDestinations(): List<Destination>{
+//        // Still failed for this
+//        // what ImageUri should return?
+//        val apiService = ApiConfig.getApiService()
+//        return try {
+//            val response = apiService.getAllDestination()
+//            response
+//        } catch (e: Exception) {
+//            throw e
+//        }
+//    }
 }

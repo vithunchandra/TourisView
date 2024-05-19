@@ -1,0 +1,192 @@
+{
+	"info": {
+		"_postman_id": "cdbb04b8-b043-4a46-845e-a4c906660071",
+		"name": "Proyek_MDP",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "trial_add_destination Copy",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "name",
+							"value": "kebun binatang surabaya",
+							"type": "default"
+						},
+						{
+							"key": "latitude",
+							"value": "0",
+							"type": "default"
+						},
+						{
+							"key": "longitude",
+							"value": "0",
+							"type": "default"
+						},
+						{
+							"key": "description",
+							"value": "tempat dengan banyak hewan di surabaya \\n\\n terdapat patung ikonik surabaya di kebun binatang ini",
+							"type": "default"
+						},
+						{
+							"key": "like",
+							"value": "0",
+							"type": "default"
+						},
+						{
+							"key": "poster",
+							"value": "dummy2@example.com",
+							"type": "default"
+						},
+						{
+							"key": "imageUri",
+							"value": "https://static.promediateknologi.id/crop/0x0:0x0/0x0/webp/photo/p2/01/2023/12/05/FotoJet-52-4254932400.jpg",
+							"type": "default"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:5123/uploadDestination",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5123",
+					"path": [
+						"uploadDestination"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_image Copy",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": []
+				},
+				"url": {
+					"raw": "http://localhost:5123/image/bali_bird_park",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5123",
+					"path": [
+						"image",
+						"bali_bird_park"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "trial_register Copy",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "email",
+							"value": "asd@example.com",
+							"type": "default"
+						},
+						{
+							"key": "password",
+							"value": "asd",
+							"type": "default"
+						},
+						{
+							"key": "name",
+							"value": "ASD",
+							"type": "default"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:5123//register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5123",
+					"path": [
+						"",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "trial_login Copy",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "email",
+							"value": "dummy2@example.com",
+							"type": "default"
+						},
+						{
+							"key": "password",
+							"value": "asd",
+							"type": "default"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://10.15.3.56:5123/auth/login",
+					"protocol": "http",
+					"host": [
+						"10",
+						"15",
+						"3",
+						"56"
+					],
+					"port": "5123",
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_all_destination Copy",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5123/getAllDestination",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5123",
+					"path": [
+						"getAllDestination"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

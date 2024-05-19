@@ -2,8 +2,10 @@ package com.mdp.tourisview.data.api
 
 import com.mdp.tourisview.data.api.model.SignInResult
 import com.mdp.tourisview.data.api.model.SignUpResult
+import com.mdp.tourisview.data.mock.model.Destination
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
+import retrofit2.http.GET
 import retrofit2.http.POST
 
 interface ApiService {
@@ -21,4 +23,7 @@ interface ApiService {
         @Field("email") email: String,
         @Field("password") password: String
     ): SignInResult
+    @FormUrlEncoded
+    @GET("getAllDestination")
+    suspend fun getAllDestination(): List<Destination>
 }
