@@ -53,18 +53,16 @@ object MockServer {
 
     suspend fun uploadDestination(
         name: String, image: String, description: String,
-        latitude: Double, longitude: Double, poster: String,
-        context: Context
+        latitude: Double, longitude: Double, locationName: String, poster: String
     ): UploadDestinationResult {
         delay(2000)
-        val location = getAddress(LatLng(latitude, longitude), context)
         val newDestination = MockServerDestination(
             id = "DES_${UUID.randomUUID()}",
             name = name, imageUrl = image,
             description = description,
             latitude = latitude,
             longitude = longitude,
-            locationName = location,
+            locationName = locationName,
             poster = poster,
             createdAt = Date().toString(),
             isBookmarked = false

@@ -57,6 +57,15 @@ class DestinationRepository private constructor(
                 locationName = locationName,
                 createdAt = Date().toString(), false
             )
+            MockServer.uploadDestination(
+                name = name,
+                image = image,
+                description = description,
+                latitude = latitude,
+                longitude = longitude,
+                locationName = locationName,
+                poster = poster
+            )
             destinationDao.insertDestination(roomDestination)
             ApiResult.Success("Destination added successfully")
         }catch(exc: Exception){
