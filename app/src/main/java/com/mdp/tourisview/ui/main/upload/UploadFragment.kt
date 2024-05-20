@@ -16,7 +16,7 @@ import androidx.navigation.fragment.findNavController
 import com.mdp.tourisview.R
 import com.mdp.tourisview.databinding.FragmentUploadBinding
 import com.mdp.tourisview.ui.main.camera.CameraActivity
-import com.mdp.tourisview.ui.main.map.SelectLocationActivity
+import com.mdp.tourisview.ui.main.map.select_location.SelectLocationActivity
 import com.mdp.tourisview.util.TextChangedListener
 
 class UploadFragment : Fragment() {
@@ -31,6 +31,7 @@ class UploadFragment : Fragment() {
         if(it.resultCode == SelectLocationActivity.LOCATION_RESULT){
             val latitude = it.data?.getDoubleExtra(SelectLocationActivity.LATITUDE, 0.0)
             val longitude = it.data?.getDoubleExtra(SelectLocationActivity.LONGITUDE, 0.0)
+
             binding.latitudeEt.setText(latitude.toString())
             binding.longitudeEt.setText(longitude.toString())
         }
@@ -130,7 +131,7 @@ class UploadFragment : Fragment() {
         }
 
         binding.uploadButton.setOnClickListener {
-            viewModel.upload()
+            viewModel.upload(requireActivity().applicationContext)
         }
     }
 

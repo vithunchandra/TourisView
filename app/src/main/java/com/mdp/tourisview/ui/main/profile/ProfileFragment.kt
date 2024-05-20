@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.mdp.tourisview.R
 import com.mdp.tourisview.databinding.FragmentProfileBinding
 import com.mdp.tourisview.ui.authorization.AuthorizationActivity
@@ -41,6 +42,10 @@ class ProfileFragment : Fragment() {
     private fun setUpView(){
         binding.logoutButton.setOnClickListener {
             viewModel.logout()
+        }
+        binding.bookmarkButton.setOnClickListener {
+            val directions = ProfileFragmentDirections.actionProfileFragmentToBookmarkFragment()
+            findNavController().navigate(directions)
         }
     }
 }

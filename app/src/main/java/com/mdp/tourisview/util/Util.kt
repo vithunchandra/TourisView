@@ -12,7 +12,9 @@ fun getAddress(latLng: LatLng, context: Context): String{
 
     return if(addresses == null){
         "Location not found"
-    }else{
+    }else if(addresses.isEmpty()){
+        "Location not found"
+    }else {
         val address = addresses[0]
         val city = address.locality
         val country = address.countryName

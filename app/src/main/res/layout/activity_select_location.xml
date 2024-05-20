@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:map="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ui.main.map.SelectLocationActivity">
+    tools:context=".ui.main.map.select_location.SelectLocationActivity">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/map"

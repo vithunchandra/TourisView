@@ -1,34 +1,43 @@
 package com.mdp.tourisview.adapter
 
-import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.gms.maps.model.LatLng
-import com.mdp.tourisview.data.mock.model.Destination
+import com.google.android.material.button.MaterialButton
+import com.mdp.tourisview.R
+import com.mdp.tourisview.data.local.room.model.RoomDestination
 import com.mdp.tourisview.databinding.DestinationItemBinding
-import com.mdp.tourisview.util.getAddress
+import com.squareup.picasso.Picasso
 
 class DestinationAdapter(
-    private val context: Context,
     private val action: Action
-): ListAdapter<Destination, DestinationAdapter.DestinationAdapterViewHolder>(
+): ListAdapter<RoomDestination, DestinationAdapter.DestinationAdapterViewHolder>(
     DIFF_CALLBACK
 ) {
     inner class DestinationAdapterViewHolder(
         private val binding: DestinationItemBinding
     ): RecyclerView.ViewHolder(binding.root){
-        fun bind(destination: Destination){
-            val location = getAddress(
-                LatLng(destination.latitude, destination.longitude),
-                context
-            )
-            binding.imageView.setImageURI(destination.imageUri)
-            binding.nameTv.text = destination.name
-            binding.locationTv.text = location
-            binding.root.setOnClickListener { action.onClick(destination) }
+        fun bind(roomDestination: RoomDestination){
+            binding.imageView.setImageResource(R.drawable.image_24px)
+            binding.nameTv.text = roomDestination.name
+            binding.locationTv.text = roomDestination.locationName
+            binding.root.setOnClickListener { action.onClick(roomDestination) }
+            Picasso.get().load(roomDestination.imageUrl)
+                .placeholder(R.drawable.image_placeholder)
+                .error(R.drawable.image_placeholder)
+                .into(binding.imageView)
+            Log.d("Tes toggle", "Adapter boolean: ${roomDestination.isBookmarked}")
+            if(roomDestination.isBookmarked){
+                (binding.bookmarkButton as MaterialButton).setIconResource(R.drawable.bookmark_filled_24px)
+            }else{
+                (binding.bookmarkButton as MaterialButton).setIconResource(R.drawable.bookmark_24px)
+            }
+            binding.bookmarkButton.setOnClickListener {
+                action.bookmarkClick(roomDestination)
+            }
         }
     }
 
@@ -45,12 +54,12 @@ class DestinationAdapter(
     }
 
     companion object{
-        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Destination>(){
-            override fun areItemsTheSame(oldItem: Destination, newItem: Destination): Boolean {
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<RoomDestination>(){
+            override fun areItemsTheSame(oldItem: RoomDestination, newItem: RoomDestination): Boolean {
                 return oldItem == newItem
             }
 
-            override fun areContentsTheSame(oldItem: Destination, newItem: Destination): Boolean {
+            override fun areContentsTheSame(oldItem: RoomDestination, newItem: RoomDestination): Boolean {
                 return oldItem == newItem
             }
 
@@ -58,6 +67,7 @@ class DestinationAdapter(
     }
 
     interface Action{
-        fun onClick(destination: Destination)
+        fun onClick(roomDestination: RoomDestination)
+        fun bookmarkClick(roomDestination: RoomDestination)
     }
 }

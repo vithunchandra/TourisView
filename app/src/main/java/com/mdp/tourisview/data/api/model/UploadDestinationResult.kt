@@ -1,9 +1,8 @@
 package com.mdp.tourisview.data.api.model
 
-import android.net.Uri
-import com.mdp.tourisview.data.mock.model.Destination
+import com.mdp.tourisview.data.mock.server.model.MockServerDestination
 
 class UploadDestinationResult(
     val message: String,
-    val data: Destination
+    val data: MockServerDestination
 )

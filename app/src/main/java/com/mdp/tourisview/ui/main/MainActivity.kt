@@ -8,11 +8,15 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.mdp.tourisview.R
+import com.mdp.tourisview.data.mock.server.MockServer
 import com.mdp.tourisview.databinding.ActivityMainBinding
 import com.mdp.tourisview.ui.authorization.AuthorizationActivity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -55,6 +59,9 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        lifecycleScope.launch(Dispatchers.IO) {
+            MockServer.initServer(applicationContext)
+        }
         setUpState()
         setUpView()
         requestMultiplePermission.launch(permissionsArray)

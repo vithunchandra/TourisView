@@ -65,6 +65,7 @@
             android:layout_height="wrap_content"
             android:indeterminate="true"
             app:indicatorColor="@color/blue"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="@+id/recyclerView"
             app:layout_constraintEnd_toEndOf="@+id/recyclerView"
             app:layout_constraintStart_toStartOf="@+id/recyclerView"

@@ -1,18 +1,20 @@
-package com.mdp.tourisview.data.mock
+package com.mdp.tourisview.data.mock.database
 
 import android.net.Uri
-import com.mdp.tourisview.data.api.ApiConfig
 import com.mdp.tourisview.data.api.model.SignInResult
 import com.mdp.tourisview.data.api.model.SignUpResult
 import com.mdp.tourisview.data.api.model.UploadDestinationResult
-import com.mdp.tourisview.data.mock.model.Destination
-import com.mdp.tourisview.data.mock.model.User
-import com.mdp.tourisview.util.ApiResult
+import com.mdp.tourisview.data.mock.database.model.MockDBDestination
+import com.mdp.tourisview.data.mock.database.model.User
+import com.mdp.tourisview.data.mock.database.model.convertToMockServerDestination
 import kotlinx.coroutines.delay
+import java.util.Date
+import java.util.UUID
+import kotlin.random.Random
 
 object MockDB {
     private val users: MutableList<User> = mutableListOf()
-    private val destinations: MutableList<Destination> = mutableListOf()
+    private val destinations: MutableList<MockDBDestination> = mutableListOf()
 
     suspend fun login(email: String, password: String): SignInResult{
         delay(2000)
@@ -63,26 +65,31 @@ object MockDB {
 //    }
 
     suspend fun uploadDestination(
-        name: String, image: Uri, description: String,
+        name: String, image: String, description: String,
         latitude: Double, longitude: Double, poster: String
     ): UploadDestinationResult{
         delay(2000)
-        val newDestination = Destination(
-            name = name, imageUri = image,
+        val newDestination = MockDBDestination(
+            name = name, imageUrl = image,
             description = description, latitude = latitude,
-            longitude = longitude, like = 0,
-            poster = poster
+            longitude = longitude, locationName = "location not found", createdAt = Date().toString(),
+            poster = poster, id = "DES_${UUID.randomUUID()}", isBookmarked = false
         )
         destinations.add(newDestination)
         return UploadDestinationResult(
             message = "Destination uploaded successfully",
-            data = newDestination
+            data = newDestination.convertToMockServerDestination()
         )
     }
 
-    suspend fun getAllDestinations(): List<Destination>{
+    suspend fun getAllDestinations(name: String?): List<MockDBDestination>{
         delay(2000)
-        return destinations
+        val result = if(name != null){
+            destinations.filter {
+                it.name.contains(name)
+            }
+        }else destinations
+        return result
     }
 
 //    suspend fun getAllDestinations(): List<Destination>{

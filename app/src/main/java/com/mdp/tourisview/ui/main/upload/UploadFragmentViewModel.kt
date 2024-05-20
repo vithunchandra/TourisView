@@ -7,14 +7,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.mdp.tourisview.data.repository.AuthRepository
+import com.google.android.gms.maps.model.LatLng
 import com.mdp.tourisview.data.repository.DestinationRepository
 import com.mdp.tourisview.data.repository.SessionRepository
 import com.mdp.tourisview.di.Injection
-import com.mdp.tourisview.ui.authorization.signup.SignUpViewModel
 import com.mdp.tourisview.util.ApiResult
+import com.mdp.tourisview.util.getAddress
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -36,13 +35,57 @@ class UploadFragmentViewModel(
 
     val viewState: LiveData<UploadFragmentViewState> = _viewState
 
-    fun upload(){
+//    fun upload(){
+//        viewModelScope.launch {
+//            _viewState.value = _viewState.value?.copy(
+//                isLoading = true, isError = false,
+//                isSuccess = false, errorMessage = ""
+//            )
+//
+//            _viewState.value?.let {
+//                val session = runBlocking {
+//                    sessionRepository.getSession().first()
+//                }
+//                val poster = session.email
+//                Log.d("UploadFragmentViewModel", "poster = $poster")
+//
+//                if(it.name.isEmpty() || it.imageUri == null || it.description.isEmpty() ||
+//                    it.latitude == 0.0 || it.longitude == 0.0 || poster.isEmpty()
+//                ){
+//                    _viewState.value = _viewState.value?.copy(
+//                        isLoading = false, isError = true, errorMessage = "Invalid Input"
+//                    )
+//                    return@launch
+//                }
+//                val result = destinationRepository.uploadDestination(
+//                    name = it.name , image = it.imageUri!!, description = it.description,
+//                    latitude = it.latitude, longitude = it.longitude, poster = poster!!
+//                )
+//
+//                when(result){
+//                    is ApiResult.Error -> {
+//                        _viewState.value = _viewState.value?.copy(
+//                            isLoading = false, isError = true,
+//                            isSuccess = false, errorMessage = result.message
+//                        )
+//                    }
+//                    is ApiResult.Success -> {
+//                        _viewState.value = _viewState.value?.copy(
+//                            isLoading = false, isError = false,
+//                            isSuccess = true, errorMessage = "",
+//                        )
+//                    }
+//                }
+//            }
+//        }
+//    }
+
+    fun upload(context: Context){
         viewModelScope.launch {
             _viewState.value = _viewState.value?.copy(
                 isLoading = true, isError = false,
                 isSuccess = false, errorMessage = ""
             )
-
             _viewState.value?.let {
                 val session = runBlocking {
                     sessionRepository.getSession().first()
@@ -58,9 +101,11 @@ class UploadFragmentViewModel(
                     )
                     return@launch
                 }
-                val result = destinationRepository.uploadDestination(
-                    name = it.name , image = it.imageUri!!, description = it.description,
-                    latitude = it.latitude, longitude = it.longitude, poster = poster!!
+                val locationName = getAddress(LatLng(it.latitude, it.longitude), context)
+                val result = destinationRepository.insertDestination(
+                    name = it.name , image = "https://picsum.photos/300/200",
+                    description = it.description, latitude = it.latitude,
+                    longitude = it.longitude, locationName = locationName, poster = poster
                 )
 
                 when(result){
@@ -128,7 +173,7 @@ class UploadFragmentViewModelFactory private constructor(
                 synchronized(UploadFragmentViewModelFactory::class.java){
                     INSTANCE ?: UploadFragmentViewModelFactory(
                         Injection.provideSessionRepository(context),
-                        Injection.provideDestinationRepository()
+                        Injection.provideDestinationRepository(context)
                     ).also { INSTANCE = it }
                 }
             }

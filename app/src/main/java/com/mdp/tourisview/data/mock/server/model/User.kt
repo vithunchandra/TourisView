@@ -1,4 +1,4 @@
-package com.mdp.tourisview.data.mock.model
+package com.mdp.tourisview.data.mock.server.model
 
 data class User(
     val email: String,

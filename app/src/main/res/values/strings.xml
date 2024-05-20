@@ -30,4 +30,6 @@
     <string name="scene_picture">Scene Picture</string>
     <string name="destination_name">Destination Name</string>
     <string name="error">Something went wrong</string>
+    <string name="title_activity_destination_map_location">DestinationMapLocation</string>
+    <string name="destination_location">Destination Location</string>
 </resources>

@@ -3,7 +3,7 @@ package com.mdp.tourisview.data.repository
 import com.mdp.tourisview.data.api.ApiService
 import com.mdp.tourisview.data.api.model.SignInResult
 import com.mdp.tourisview.data.api.model.SignUpResult
-import com.mdp.tourisview.data.mock.MockDB
+import com.mdp.tourisview.data.mock.database.MockDB
 import com.mdp.tourisview.util.ApiResult
 
 class AuthRepository private constructor(
