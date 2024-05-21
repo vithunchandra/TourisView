@@ -4,6 +4,8 @@ import mysql.connector
 from flask import Flask, request, send_from_directory, abort
 
 from util_db import *
+from datetime import datetime
+
 
 PORT = 5123
 # ngrok.set_auth_token("")
@@ -148,24 +150,32 @@ def upload_destination() :
     # print(sql_query)
     return json_result_now
 
+
 @app.route('/getAllDestination', methods=['GET'])
 def get_all_destination() :
-    sql_query = "SELECT `destination_name` as name, ifnull(`destination_latitude`,0) as latitude, ifnull(`destination_longtitude`,0) as longtitude, `destination_description` as description, (SELECT display_name from users where users.user_id = destination_poster) as poster, `destination_like` as 'like' FROM `destinations` WHERE 1 order by destination_id desc LIMIT 2;"
+    sql_query = "SELECT destination_id as id, `destination_name` as name, ifnull(`destination_latitude`,44) as latitude, ifnull(`destination_longtitude`,66) as longtitude, `destination_description` as description, (SELECT display_name from users where users.user_id = destination_poster) as poster FROM `destinations` WHERE 1 order by destination_id desc LIMIT 2;"
     temp_res = execute_select_with_cursor(mycursor, sql_query)
     
     for i in range(len(temp_res)) :
+        temp_res[i].update({"id":str(temp_res[i]['id'])})
+        temp_res[i].update({"isBookmarked":False})
+        temp_res[i].update({"locationName":temp_res[i]['name']})
+        current_time = datetime.now()
+        time_string = current_time.strftime("%d/%m/%Y")  # Format as DD/MM/YYYY
+        temp_res[i].update({"createdAt":time_string})
+        
         dest_now = temp_res[i]
-        select_destination_img = f"SELECT * FROM `images` WHERE destination_id = (SELECT destination_id from destinations where destination_name = '{dest_now['name']}') LIMIT 1"
+        select_destination_img = f"""SELECT * FROM `images` WHERE destination_id = (SELECT destination_id from destinations where destination_name = '{dest_now["name"]}') LIMIT 1"""
         destination_img_now = execute_select_with_cursor(mycursor, select_destination_img)
         if len(destination_img_now) > 0 :
             destination_img_now = destination_img_now[0]
             if (str(destination_img_now['image']).startswith(('http://', 'https://'))) :
-                temp_res[i].update({"imageUri":destination_img_now['image']})
+                temp_res[i].update({"imageUrl":destination_img_now['image']})
             else :
                 saved_image_path_now = "https://" + DOMAIN_NOW + "/image/" + dest_now['name']
-                temp_res[i].update({"imageUri":saved_image_path_now})
+                temp_res[i].update({"imageUrl":saved_image_path_now})
         else :
-            temp_res[i].update({"imageUri":"https://demofree.sirv.com/nope-not-here.jpg"})
+            temp_res[i].update({"imageUrl":"https://demofree.sirv.com/nope-not-here.jpg"})
     
     temp_res = json.dumps(temp_res)
     return temp_res
