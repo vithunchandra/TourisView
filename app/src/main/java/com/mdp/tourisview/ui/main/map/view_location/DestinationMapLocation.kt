@@ -6,9 +6,11 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import com.google.android.gms.maps.GoogleMap
@@ -16,6 +18,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.mdp.tourisview.R
 import com.mdp.tourisview.databinding.ActivityDestinationMapLocationBinding
@@ -30,6 +33,7 @@ class DestinationMapLocation : AppCompatActivity(), OnMapReadyCallback {
     private val viewModel by viewModels<DestinationMapLocationViewModel>{
         DestinationMapLocationViewModelFactory.getInstance(this.baseContext)
     }
+    private val listMarker = mutableListOf<Marker?>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,9 +68,19 @@ class DestinationMapLocation : AppCompatActivity(), OnMapReadyCallback {
                             val smallMarkerIcon = BitmapDescriptorFactory.fromBitmap(bitmap)
 
                             val destinationLatLng = LatLng(destination.latitude, destination.longitude)
-                            mMap.addMarker(
+                            val marker = mMap.addMarker(
                                 MarkerOptions().position(destinationLatLng).title(destination.name).icon(smallMarkerIcon)
                             )
+                            marker?.tag = destination.id
+
+                            mMap.setOnMarkerClickListener {
+                                Log.d("Tes Map", "marker_id: ${it.tag} - destination_id: ${destination.id}")
+                                val tempDestination = destinations.find { roomDestination ->
+                                    roomDestination.id == it.tag
+                                }
+                                Toast.makeText(baseContext, "Hello dari ${tempDestination?.name}", Toast.LENGTH_SHORT).show()
+                                return@setOnMarkerClickListener false
+                            }
                         }
 
                         override fun onError(p0: Exception?) {
