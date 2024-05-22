@@ -97,9 +97,9 @@ def upload_destination() :
     destination_latitude = request.form['latitude']
     destination_longitude = request.form['longitude']
     destination_description = request.form['description']
-    destination_like = request.form['like']
     destination_poster_username = request.form['poster']
-    imageUri = request.form['imageUri']
+    image = request.form['image']
+    destination_like = 0
     
     select_query_str = f"SELECT user_id from users where email = '{destination_poster_username}'"
     destination_poster = execute_select_with_cursor(mycursor, select_query_str)
@@ -116,9 +116,9 @@ def upload_destination() :
     # folder_path_now = f"./uploaded/{replace_dest_name}/"
     # if not os.path.exists(folder_path_now):
     #     os.mkdir(folder_path_now)
-    # img_path_now = folder_path_now + "img1." + imageUri.split(".")[-1]
+    # img_path_now = folder_path_now + "img1." + image.split(".")[-1]
     
-    # img_data = requests.get(imageUri).content
+    # img_data = requests.get(image).content
     # with open(img_path_now, 'wb') as handler:
     #     handler.write(img_data)
         
@@ -129,10 +129,10 @@ def upload_destination() :
     inserted_destination = execute_select_with_cursor(mycursor, inserted_destination)[0]
     
     
-    sql_query = f"INSERT INTO `images`(`destination_id`, `image`) VALUES ('{inserted_destination['destination_id']}','{imageUri}')"
+    sql_query = f"INSERT INTO `images`(`destination_id`, `image`) VALUES ('{inserted_destination['destination_id']}','{image}')"
     temp_res = execute_query(mydb=mydb, mycursor=mycursor, query=sql_query)
     
-    select_destination = f"SELECT `destination_name` as name, ifnull(`destination_latitude`,0) as latitude, ifnull(`destination_longtitude`,0) as longtitude, `destination_description` as description, (SELECT email from users where users.user_id = destination_poster) as poster, `destination_like` as 'like' FROM `destinations` WHERE destination_name = '{destination_name}'"
+    select_destination = f"SELECT destination_id as id, `destination_name` as name, ifnull(`destination_latitude`,0) as latitude, ifnull(`destination_longtitude`,0) as longtitude, `destination_description` as description, (SELECT email from users where users.user_id = destination_poster) as poster FROM `destinations` WHERE destination_name = '{destination_name}'"
     dst_now = execute_select_with_cursor(mycursor, select_destination)[0]
     
     select_destination_img = f"SELECT * FROM `images` WHERE destination_id = (SELECT destination_id from destinations where destination_name = '{destination_name}') LIMIT 1"
@@ -140,7 +140,14 @@ def upload_destination() :
     # if not destination_img_now.startswith(('http://', 'https://')) :
     #     return abort(500, "MUST BE URL")
     
-    dst_now.update({"imageUri":destination_img_now['image']})
+    
+    dst_now.update({"imageUrl":destination_img_now['image']})
+    dst_now.update({"isBookmarked":False})
+    dst_now.update({"id":str(dst_now['id'])})
+    dst_now.update({"locationName":dst_now['name']})
+    current_time = datetime.now()
+    time_string = current_time.strftime("%d/%m/%Y")  # Format as DD/MM/YYYY
+    dst_now.update({"createdAt":time_string})
     
     json_result_now = {
         "message":temp_res,

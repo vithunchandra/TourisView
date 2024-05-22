@@ -2,6 +2,7 @@ package com.mdp.tourisview.data.api
 
 import com.mdp.tourisview.data.api.model.SignInResult
 import com.mdp.tourisview.data.api.model.SignUpResult
+import com.mdp.tourisview.data.api.model.UploadDestinationResult
 import com.mdp.tourisview.data.mock.server.model.MockServerDestination
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -28,4 +29,16 @@ interface ApiService {
     @FormUrlEncoded
     @GET("getAllDestination")
     suspend fun getAllDestination(): List<MockServerDestination>
+
+    @FormUrlEncoded
+    @POST("uploadDestination")
+    suspend fun uploadDestination(
+        @Field("name") name: String,
+        @Field("image") image: String,
+        @Field("description") description: String,
+        @Field("latitude") latitude: Double,
+        @Field("longitude") longitude: Double,
+        @Field("locationName") locationName: String,
+        @Field("poster") poster: String,
+    ): UploadDestinationResult
 }
