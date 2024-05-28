@@ -9,8 +9,10 @@ import com.mdp.tourisview.data.mock.server.model.MockServerDestination
 import com.mdp.tourisview.data.mock.server.model.User
 import com.mdp.tourisview.util.getAddress
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import java.util.Date
 import java.util.UUID
 import kotlin.random.Random
@@ -33,20 +35,24 @@ object MockServer {
             for(user in users){
                 val latitude = Random.nextDouble(0.0, 99.0)
                 val longitude = Random.nextDouble(0.0, 99.0)
-                val location = getAddress(LatLng(latitude, longitude), context)
-                val destination = MockServerDestination(
-                    id = "DES_${UUID.randomUUID()}",
-                    poster = user.email,
-                    name = "${user.displayName} Destination",
-                    imageUrl = "https://picsum.photos/id/${Random.nextInt(1, 300)}/200/300",
-                    description = "${user.displayName} Destination Description",
-                    latitude = latitude,
-                    longitude = longitude,
-                    locationName = location,
-                    createdAt = Date().toString(),
-                    isBookmarked = Random.nextBoolean()
-                )
-                destinations.add(destination)
+                val location = async(Dispatchers.IO){
+                    getAddress(LatLng(latitude, longitude), context)
+                }
+                withContext(Dispatchers.Main){
+                    val destination = MockServerDestination(
+                        id = "DES_${UUID.randomUUID()}",
+                        poster = user.email,
+                        name = "${user.displayName} Destination",
+                        imageUrl = "https://picsum.photos/id/${Random.nextInt(1, 300)}/200/300",
+                        description = "${user.displayName} Destination Description",
+                        latitude = latitude,
+                        longitude = longitude,
+                        locationName = location.await(),
+                        createdAt = Date().toString(),
+                        isBookmarked = Random.nextBoolean()
+                    )
+                    destinations.add(destination)
+                }
             }
         }
     }

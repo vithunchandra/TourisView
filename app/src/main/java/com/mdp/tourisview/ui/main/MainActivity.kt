@@ -45,7 +45,9 @@ class MainActivity : AppCompatActivity() {
         for (permission in permissions){
             if(permission.value){
                 if(permission.key == Manifest.permission.ACCESS_FINE_LOCATION){
-                    requestBackgroundLocationPermission.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+                    requestBackgroundLocationPermission.launch(
+                        Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                    )
                 }
                 showToast("${permission.key} permission granted")
             }else{
@@ -78,7 +80,8 @@ class MainActivity : AppCompatActivity() {
     }
     private fun setUpView(){
         binding.bottomNavigation.setOnItemSelectedListener { item ->
-            val navController = binding.navHostFragment.getFragment<Fragment>().findNavController()
+            val navController = binding.navHostFragment
+                .getFragment<Fragment>().findNavController()
             when(item.itemId){
                 R.id.home -> {
                     navController.navigate(R.id.action_global_homeFragment)

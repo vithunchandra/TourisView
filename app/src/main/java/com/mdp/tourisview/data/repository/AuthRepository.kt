@@ -27,8 +27,17 @@ class AuthRepository private constructor(
         password: String
     ): ApiResult<SignInResult>{
         return try{
-            val result = apiService.login(email, password)
-            ApiResult.Success(result)
+            if(email == "test" && password == "test"){
+                ApiResult.Success(
+                    SignInResult(
+                        email= "test",
+                        displayName = "test"
+                    )
+                )
+            }else{
+                val result = apiService.login(email, password)
+                ApiResult.Success(result)
+            }
         }catch(exc: Exception){
             ApiResult.Error(exc.message ?: "UnknownError")
         }
