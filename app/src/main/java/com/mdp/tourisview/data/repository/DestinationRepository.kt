@@ -57,7 +57,7 @@ class DestinationRepository private constructor(
                 locationName = locationName,
                 createdAt = Date().toString(), false
             )
-            MockServer.uploadDestination(
+            apiService.uploadDestination(
                 name = name,
                 image = image,
                 description = description,
@@ -101,7 +101,8 @@ class DestinationRepository private constructor(
 
     suspend fun fetchDestinationsFromServer(): ApiResult<String>{
         return try {
-            val result = MockServer.getAllDestinations()
+//            val result = MockServer.getAllDestinations()
+            val result = apiService.getAllDestinations()
             destinationDao.deleteDestinations()
             destinationDao.insertAllDestinations(
                 result.map { it.convertToLocalDestination() }

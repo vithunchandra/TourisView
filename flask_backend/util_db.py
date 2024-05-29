@@ -1,4 +1,8 @@
 import json
+from PIL import Image
+import requests
+from io import BytesIO
+import os
 
 def execute_select_with_cursor(mycursor, select_query) :
     mycursor.execute(select_query)
@@ -32,3 +36,15 @@ def execute_select_with_cursor_as_json(mycursor, select_query) :
     result = execute_select_with_cursor(mycursor, select_query)
     result_json = json.dumps(result)
     return result_json
+
+
+def load_image(source):
+    if source.startswith(('http://', 'https://')):
+        response = requests.get(source)
+        response.raise_for_status()  # Ensure we notice bad responses
+        img = Image.open(BytesIO(response.content))
+    elif os.path.isfile(source):
+        img = Image.open(source)
+    else:
+        raise ValueError("The source must be a valid URL or file path.")
+    return img

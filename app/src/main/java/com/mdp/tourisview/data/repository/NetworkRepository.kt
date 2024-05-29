@@ -8,7 +8,7 @@ class NetworkRepository private constructor(
     private val apiService: ApiService
 ) {
     suspend fun getAllDestinationsNetwork(name: String? = null): List<MockServerDestination>{
-        return MockServer.getAllDestinations(name)
+        return apiService.getAllDestinations(name)
     }
 
     companion object{

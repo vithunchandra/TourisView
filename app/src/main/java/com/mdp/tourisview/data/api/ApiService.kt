@@ -1,5 +1,6 @@
 package com.mdp.tourisview.data.api
 
+import com.google.android.gms.common.internal.safeparcel.SafeParcelable.Param
 import com.mdp.tourisview.data.api.model.SignInResult
 import com.mdp.tourisview.data.api.model.SignUpResult
 import com.mdp.tourisview.data.api.model.UploadDestinationResult
@@ -8,6 +9,7 @@ import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Query
 
 interface ApiService {
     @FormUrlEncoded
@@ -26,9 +28,11 @@ interface ApiService {
     ): SignInResult
     
 
-    @FormUrlEncoded
-    @GET("getAllDestination")
-    suspend fun getAllDestination(): List<MockServerDestination>
+//    @FormUrlEncoded
+    @GET("getAllDestinations")
+    suspend fun getAllDestinations(
+        @Query("name") name: String?=null,
+    ): List<MockServerDestination>
 
     @FormUrlEncoded
     @POST("uploadDestination")

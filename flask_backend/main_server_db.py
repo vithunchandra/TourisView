@@ -3,8 +3,11 @@ import requests
 import mysql.connector
 from flask import Flask, request, send_from_directory, abort
 
+from sentence_transformers import SentenceTransformer, util
+
 from util_db import *
 from datetime import datetime
+from util_service import *
 
 
 PORT = 5123
@@ -21,6 +24,35 @@ mydb = mysql.connector.connect(
     database="proyek_mdp"
 )
 mycursor = mydb.cursor()
+
+
+
+mycursor.execute("SELECT * FROM images")
+myresult_image = mycursor.fetchall()
+all_image_list = []
+all_image_destination_list = []
+for image_data in myresult_image:
+    all_image_list.append(load_image(image_data[2]))
+    all_image_destination_list.append(image_data[1])
+assert len(all_image_list) == len(all_image_destination_list)
+
+mycursor.execute("SELECT * FROM destinations")
+myresult_destination = mycursor.fetchall()
+all_desc_list = []
+all_desc_destination_list = []
+for destination_data in myresult_destination:
+    desc_now = destination_data[4]
+    desc_now_list = desc_now.split("\n\n")
+    for desc_now_temp in desc_now_list :
+        all_desc_list.append(desc_now_temp)
+        all_desc_destination_list.append(destination_data[0])
+assert len(all_desc_list) == len(all_desc_destination_list)
+
+# model_img = SentenceTransformer('clip-ViT-B-32')
+# model_text = SentenceTransformer('sentence-transformers/clip-ViT-B-32-multilingual-v1')
+# all_img_embeddings = model_img.encode(all_image_list)
+# all_desc_embeddings = model_text.encode(all_desc_list)
+
 
 
 app = Flask(__name__)
@@ -158,11 +190,51 @@ def upload_destination() :
     return json_result_now
 
 
-@app.route('/getAllDestination', methods=['GET'])
-def get_all_destination() :
-    sql_query = "SELECT destination_id as id, `destination_name` as name, ifnull(`destination_latitude`,44) as latitude, ifnull(`destination_longtitude`,66) as longtitude, `destination_description` as description, (SELECT display_name from users where users.user_id = destination_poster) as poster FROM `destinations` WHERE 1 order by destination_id desc LIMIT 2;"
+@app.route('/getAllDestinations', methods=['GET'])
+def get_all_destinations() :
+    sql_query = "SELECT destination_id as id, `destination_name` as name, ifnull(`destination_latitude`,44) as latitude, ifnull(`destination_longtitude`,66) as longtitude, `destination_description` as description, (SELECT display_name from users where users.user_id = destination_poster) as poster FROM `destinations` WHERE 1 order by destination_id desc"
     temp_res = execute_select_with_cursor(mycursor, sql_query)
     
+
+    search_name = request.args.get('name')
+    print(search_name)
+    if (search_name == None) or  (search_name == ""):
+        search_name = ""
+    else :
+        temp_res2 = []
+        for now_res in temp_res :
+            if search_name in str(now_res['name']) :
+                temp_res2.append(now_res)
+        temp_res = temp_res2  
+        
+        
+        # text_embeddings = model_text.encode([search_name])
+        # cos_sim_txt_img = util.cos_sim(text_embeddings, all_img_embeddings)[0]
+        # cos_sim_txt_txt = util.cos_sim(text_embeddings, all_desc_embeddings)[0]
+        
+        # destination_sim_dict = get_destination_sim_dict(all_image_destination_list, all_desc_destination_list, cos_sim_txt_img, cos_sim_txt_txt)
+        # destination_idx, similarity_list_now = sim_combine_destination_sim_dict(destination_sim_dict)
+        # similarity_list_now = torch.as_tensor(similarity_list_now).float()
+        # values, indices = similarity_list_now = similarity_list_now.sort(descending=True)
+        # indices = indices[0:5].detach().cpu().numpy()
+        # indices = [destination_idx[int(ind)] for ind in  indices]
+
+        # print(type(temp_res))
+        # temp_res2 = []
+        # for ind in indices :
+        #     for now_res in temp_res :
+        #         print("==================================================")
+        #         print(now_res)
+        #         print("==================================================")
+        #         now_res_id = int(now_res['id'])
+        #         print(now_res_id)
+                
+        #         if now_res_id == ind :
+        #             temp_res2.append(now_res)
+        # temp_res = temp_res2        
+    
+
+     
     for i in range(len(temp_res)) :
         temp_res[i].update({"id":str(temp_res[i]['id'])})
         temp_res[i].update({"isBookmarked":False})
