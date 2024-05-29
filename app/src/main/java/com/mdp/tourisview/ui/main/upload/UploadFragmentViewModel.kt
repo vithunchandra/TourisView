@@ -14,9 +14,14 @@ import com.mdp.tourisview.data.repository.SessionRepository
 import com.mdp.tourisview.di.Injection
 import com.mdp.tourisview.util.ApiResult
 import com.mdp.tourisview.util.getAddress
+import com.mdp.tourisview.util.uriToFile
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.lang.IllegalArgumentException
 
 class UploadFragmentViewModel(
@@ -97,15 +102,31 @@ class UploadFragmentViewModel(
                     it.latitude == 0.0 || it.longitude == 0.0 || poster.isEmpty()
                 ){
                     _viewState.value = _viewState.value?.copy(
-                        isLoading = false, isError = true, errorMessage = "Invalid Input"
+                        isLoading = false,
+                        isError = true,
+                        errorMessage = "Invalid Input"
                     )
                     return@launch
                 }
                 val locationName = getAddress(LatLng(it.latitude, it.longitude), context)
+                val imageFile = uriToFile(it.imageUri!!, context)
+                val requestName = it.name.toRequestBody("text/plain".toMediaType())
+                val requestImageFile = imageFile.asRequestBody("image/jpg".toMediaType())
+                val image = MultipartBody.Part.createFormData(
+                    "photo",
+                    imageFile.name,
+                    requestImageFile
+                )
+                val requestDescription = it.description.toRequestBody("text/plain".toMediaType())
+                val requestLatitude = it.latitude.toString().toRequestBody("text/plain".toMediaType())
+                val requestLongitude = it.longitude.toString().toRequestBody("text/plain".toMediaType())
+                val requestLocationName = locationName.toRequestBody("text/plain".toMediaType())
+                val requestPoster = poster.toRequestBody("text/plain".toMediaType())
                 val result = destinationRepository.insertDestination(
-                    name = it.name , image = "https://picsum.photos/300/200",
-                    description = it.description, latitude = it.latitude,
-                    longitude = it.longitude, locationName = locationName, poster = poster
+                    name = requestName , image = image,
+                    description = requestDescription, latitude = requestLatitude,
+                    longitude = requestLongitude, locationName = requestLocationName,
+                    poster = requestPoster
                 )
 
                 when(result){

@@ -11,6 +11,8 @@ import com.mdp.tourisview.data.mock.server.MockServer
 import com.mdp.tourisview.data.mock.server.model.convertToLocalDestination
 import com.mdp.tourisview.util.ApiResult
 import com.mdp.tourisview.util.getAddress
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import java.util.Date
 import java.util.UUID
 
@@ -44,20 +46,12 @@ class DestinationRepository private constructor(
 //    }
 
     suspend fun insertDestination(
-        name: String, image: String, description: String,
-        latitude: Double, longitude: Double,
-        locationName: String, poster: String
+        name: RequestBody, image: MultipartBody.Part, description: RequestBody,
+        latitude: RequestBody, longitude: RequestBody,
+        locationName: RequestBody, poster: RequestBody
     ): ApiResult<String>{
         return try{
-            val roomDestination = RoomDestination(
-                id = "DES_${UUID.randomUUID()}",
-                poster = poster, name = name,
-                imageUrl = image, description = description,
-                latitude = latitude, longitude = longitude,
-                locationName = locationName,
-                createdAt = Date().toString(), false
-            )
-            apiService.uploadDestination(
+            val result = apiService.uploadDestination(
                 name = name,
                 image = image,
                 description = description,
@@ -65,6 +59,17 @@ class DestinationRepository private constructor(
                 longitude = longitude,
                 locationName = locationName,
                 poster = poster
+            )
+            val roomDestination = RoomDestination(
+                id = result.data.id,
+                poster = result.data.poster,
+                name = result.data.name,
+                imageUrl = result.data.imageUrl,
+                description = result.data.description,
+                latitude = result.data.latitude,
+                longitude = result.data.longitude,
+                locationName = result.data.locationName,
+                createdAt = Date().toString(), false
             )
             destinationDao.insertDestination(roomDestination)
             ApiResult.Success("Destination added successfully")
