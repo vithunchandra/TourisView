@@ -41,12 +41,12 @@ interface ApiService {
     @Multipart
     @POST("uploadDestination")
     suspend fun uploadDestination(
-        @Field("name") name: RequestBody,
+        @Part("name") name: RequestBody,
         @Part image: MultipartBody.Part,
-        @Field("description") description: RequestBody,
-        @Field("latitude") latitude: RequestBody,
-        @Field("longitude") longitude: RequestBody,
-        @Field("locationName") locationName: RequestBody,
-        @Field("poster") poster: RequestBody,
+        @Part("description") description: RequestBody,
+        @Part("latitude") latitude: RequestBody,
+        @Part("longitude") longitude: RequestBody,
+        @Part("locationName") locationName: RequestBody,
+        @Part("poster") poster: RequestBody,
     ): UploadDestinationResult
 }

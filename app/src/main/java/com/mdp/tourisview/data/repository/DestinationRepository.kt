@@ -74,7 +74,7 @@ class DestinationRepository private constructor(
             destinationDao.insertDestination(roomDestination)
             ApiResult.Success("Destination added successfully")
         }catch(exc: Exception){
-            ApiResult.Error("Failed to add destination")
+            ApiResult.Error("Failed to add destination ${exc.toString()}")
         }
     }
 
