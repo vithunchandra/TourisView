@@ -38,6 +38,11 @@ interface ApiService {
         @Query("name") name: String?=null,
     ): List<MockServerDestination>
 
+    @GET("getAllHistory")
+    suspend fun getAllHistory(
+        @Query("email") email: String
+    ): List<MockServerDestination>
+
     @Multipart
     @POST("uploadDestination")
     suspend fun uploadDestination(

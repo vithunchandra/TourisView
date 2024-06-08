@@ -4,7 +4,10 @@ import android.content.Context
 import android.util.Log
 import androidx.camera.core.impl.utils.ContextUtil
 import com.google.android.gms.maps.model.LatLng
+import com.mdp.tourisview.data.api.model.SignInResult
+import com.mdp.tourisview.data.api.model.SignUpResult
 import com.mdp.tourisview.data.api.model.UploadDestinationResult
+import com.mdp.tourisview.data.mock.database.MockDB
 import com.mdp.tourisview.data.mock.server.model.MockServerDestination
 import com.mdp.tourisview.data.mock.server.model.User
 import com.mdp.tourisview.util.getAddress
@@ -57,6 +60,31 @@ object MockServer {
         }
     }
 
+    suspend fun login(email: String, password: String): SignInResult {
+        delay(2000)
+        val user = users.first{
+            it.email == email && it.password == password
+        }
+        return SignInResult(
+            email = user.email,
+            displayName = user.displayName
+        )
+    }
+
+    suspend fun register(email: String, password: String, displayName: String): SignUpResult {
+        delay(2000)
+        val user = User(
+            email = email,
+            password = password,
+            displayName = displayName
+        )
+        users.add(user)
+        return SignUpResult(
+            email = email,
+            displayName = displayName
+        )
+    }
+
     suspend fun uploadDestination(
         name: String, image: String, description: String,
         latitude: Double, longitude: Double, locationName: String, poster: String
@@ -103,6 +131,15 @@ object MockServer {
                 it.name.contains(name)
             }
         }else destinations
+        return result
+    }
+
+    suspend fun getAllHistory(email:String):List<MockServerDestination>{
+        delay(2000)
+        val result =
+            destinations.filter {
+                it.poster == email
+            }
         return result
     }
 }

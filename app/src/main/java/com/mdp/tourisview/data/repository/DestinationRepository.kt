@@ -4,10 +4,12 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import com.google.android.gms.maps.model.LatLng
 import com.mdp.tourisview.data.api.ApiService
+import com.mdp.tourisview.data.api.model.UploadDestinationResult
 import com.mdp.tourisview.data.local.room.dao.DestinationDao
 import com.mdp.tourisview.data.local.room.model.RoomDestination
 import com.mdp.tourisview.data.local.room.model.RoomReview
 import com.mdp.tourisview.data.mock.server.MockServer
+import com.mdp.tourisview.data.mock.server.model.MockServerDestination
 import com.mdp.tourisview.data.mock.server.model.convertToLocalDestination
 import com.mdp.tourisview.util.ApiResult
 import com.mdp.tourisview.util.getAddress
@@ -106,8 +108,8 @@ class DestinationRepository private constructor(
 
     suspend fun fetchDestinationsFromServer(): ApiResult<String>{
         return try {
-//            val result = MockServer.getAllDestinations()
-            val result = apiService.getAllDestinations()
+            val result = MockServer.getAllDestinations()
+//            val result = apiService.getAllDestinations()
             destinationDao.deleteDestinations()
             destinationDao.insertAllDestinations(
                 result.map { it.convertToLocalDestination() }
@@ -115,6 +117,16 @@ class DestinationRepository private constructor(
             ApiResult.Success("Sync success")
         }catch(exc: Exception) {
             ApiResult.Error("Sync failed")
+        }
+    }
+
+    suspend fun getAllHistory(email:String):ApiResult<List<MockServerDestination>>{
+        return try {
+            val result = MockServer.getAllHistory(email)
+//            val result = apiService.getAllHistory(email)
+            ApiResult.Success(result)
+        }catch(exc: Exception) {
+            ApiResult.Error("fetch failed")
         }
     }
 
