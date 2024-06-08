@@ -47,5 +47,9 @@ class ProfileFragment : Fragment() {
             val directions = ProfileFragmentDirections.actionProfileFragmentToBookmarkFragment()
             findNavController().navigate(directions)
         }
+        binding.historyButton.setOnClickListener {
+            val directions = ProfileFragmentDirections.actionProfileFragmentToHistoryFragment()
+            findNavController().navigate(directions)
+        }
     }
 }
