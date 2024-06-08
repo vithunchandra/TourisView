@@ -24,9 +24,12 @@ class SignUpViewModel(
         )
     )
     val viewState: LiveData<SignUpViewState> = _viewState
-    var email = ""
-    var displayName = ""
-    var password = ""
+//    var email = ""
+//    var displayName = ""
+//    var password = ""
+    val email = MutableLiveData<String>("")
+    val displayName = MutableLiveData<String>("")
+    val password = MutableLiveData<String>("")
 
    fun signup(){
        viewModelScope.launch {
@@ -35,7 +38,7 @@ class SignUpViewModel(
                isError = false,
                errorMessage = ""
            )
-           when(val result = authRepository.signup(email, password, displayName)){
+           when(val result = authRepository.signup(email.value!!, password.value!!, displayName.value!!)){
                is ApiResult.Error -> {
                    _viewState.value = _viewState.value?.copy(
                        isLoading = false,

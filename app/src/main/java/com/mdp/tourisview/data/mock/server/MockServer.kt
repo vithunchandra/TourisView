@@ -121,7 +121,6 @@ object MockServer {
             it.isBookmarked = !it.isBookmarked
         }
         Log.d("Tes toggle", "After: ${destination?.isBookmarked}")
-
     }
 
     suspend fun getAllDestinations(name: String? = null): List<MockServerDestination>{

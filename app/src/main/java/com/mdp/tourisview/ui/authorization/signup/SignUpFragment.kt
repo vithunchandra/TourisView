@@ -24,6 +24,7 @@ class SignUpFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentSignupBinding.inflate(inflater, container, false)
+        binding.viewModel = viewModel
         return binding.root
     }
 
@@ -63,31 +64,31 @@ class SignUpFragment : Fragment() {
     }
 
     private fun setUpField(){
-        binding.emailEt.setText(viewModel.email)
-        binding.nameEt.setText(viewModel.displayName)
-        binding.passwordEt.setText(viewModel.password)
-
-        binding.emailEt.addTextChangedListener(
-            object: TextChangedListener() {
-                override fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) {
-                    viewModel.email = text.toString()
-                }
-            }
-        )
-        binding.nameEt.addTextChangedListener(
-            object: TextChangedListener() {
-                override fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) {
-                    viewModel.displayName = text.toString()
-                }
-            }
-        )
-        binding.passwordEt.addTextChangedListener(
-            object: TextChangedListener() {
-                override fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) {
-                    viewModel.password = text.toString()
-                }
-            }
-        )
+//        binding.emailEt.setText(viewModel.email)
+//        binding.nameEt.setText(viewModel.displayName)
+//        binding.passwordEt.setText(viewModel.password)
+//
+//        binding.emailEt.addTextChangedListener(
+//            object: TextChangedListener() {
+//                override fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) {
+//                    viewModel.email = text.toString()
+//                }
+//            }
+//        )
+//        binding.nameEt.addTextChangedListener(
+//            object: TextChangedListener() {
+//                override fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) {
+//                    viewModel.displayName = text.toString()
+//                }
+//            }
+//        )
+//        binding.passwordEt.addTextChangedListener(
+//            object: TextChangedListener() {
+//                override fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) {
+//                    viewModel.password = text.toString()
+//                }
+//            }
+//        )
     }
 
     private fun setUpAction(){

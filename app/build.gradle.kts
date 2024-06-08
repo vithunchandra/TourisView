@@ -4,6 +4,7 @@ plugins {
     id ("androidx.navigation.safeargs.kotlin")
     id("kotlin-parcelize")
     id("com.google.devtools.ksp")
+    id("kotlin-kapt")
     alias(libs.plugins.googleAndroidLibrariesMapsplatformSecretsGradlePlugin)
 }
 
@@ -40,6 +41,7 @@ android {
     }
     buildFeatures{
         viewBinding = true
+        dataBinding = true
     }
 }
 
@@ -77,4 +79,8 @@ dependencies {
 
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.picasso)
+
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-livedata-core-ktx:2.7.0")
+    implementation("androidx.activity:activity-ktx:1.8.2")
 }

@@ -20,8 +20,11 @@ class SignInViewModel(
     private val sessionRepository: SessionRepository,
     private val authRepository: AuthRepository
 ): ViewModel() {
-    var email = ""
-    var password = ""
+//    var email = ""
+//    var password = ""
+    val email = MutableLiveData<String>("")
+    val password = MutableLiveData<String>("")
+
     private val _viewState = MutableLiveData(
         SignInViewState(
             isLoading = false,
@@ -39,7 +42,7 @@ class SignInViewModel(
                 isError = false,
                 errorMessage = ""
             )
-            when(val result = authRepository.signin(email, password)){
+            when(val result = authRepository.signin(email.value!!, password.value!!)){
                 is ApiResult.Error -> {
                     _viewState.value = _viewState.value?.copy(
                         isLoading = false,

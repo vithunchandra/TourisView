@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.mdp.tourisview.R
 import com.mdp.tourisview.databinding.FragmentSigninBinding
 import com.mdp.tourisview.ui.main.MainActivity
+import androidx.databinding.DataBindingUtil
 import com.mdp.tourisview.util.TextChangedListener
 
 class SignInFragment : Fragment() {
@@ -26,7 +27,9 @@ class SignInFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        binding = FragmentSigninBinding.inflate(inflater, container, false)
+//        binding = FragmentSigninBinding.inflate(inflater, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_signin, container, false)
+        binding.viewModel = viewModel
         return binding.root
     }
 
@@ -84,23 +87,23 @@ class SignInFragment : Fragment() {
     }
 
     private fun setUpField(){
-        binding.emailEt.setText(viewModel.email)
-        binding.passwordEt.setText(viewModel.password)
-
-        binding.emailEt.addTextChangedListener(
-            object: TextChangedListener(){
-                override fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) {
-                    viewModel.email = text.toString()
-                }
-            }
-        )
-        binding.passwordEt.addTextChangedListener(
-            object: TextChangedListener(){
-                override fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) {
-                    viewModel.password = text.toString()
-                }
-            }
-        )
+//        binding.emailEt.setText(viewModel.email)
+//        binding.passwordEt.setText(viewModel.password)
+//
+//        binding.emailEt.addTextChangedListener(
+//            object: TextChangedListener(){
+//                override fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) {
+//                    viewModel.email = text.toString()
+//                }
+//            }
+//        )
+//        binding.passwordEt.addTextChangedListener(
+//            object: TextChangedListener(){
+//                override fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) {
+//                    viewModel.password = text.toString()
+//                }
+//            }
+//        )
     }
 
     private fun setUpAction(){
