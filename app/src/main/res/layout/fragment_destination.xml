@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.main.destination.DestinationFragment">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/destinationIv"
+        android:layout_width="match_parent"
+        android:layout_height="252dp"
+        android:scaleType="centerCrop" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="49dp"
+        android:background="@drawable/gradient"
+        android:gravity="right"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/bookmarkButton"
+            android:layout_width="72dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:background="#00FFFFFF"
+            app:icon="@drawable/bookmark_24px"
+            app:iconSize="35dp"
+            app:iconTint="@color/blue" />
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            tools:srcCompat="@drawable/star_24px" />
+
+        <TextView
+            android:id="@+id/starTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="16dp"
+            android:text="4.5"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/nameTv"
+        android:layout_width="248dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="TextView"
+        android:textColor="@color/blue"
+        android:textSize="28sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/locationTv"
+        android:layout_width="270dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="TextView"
+        android:textColor="@color/material_dynamic_neutral50"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/posterTv"
+        android:layout_width="270dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="TextView"
+        android:textColor="@color/material_dynamic_neutral50"
+        android:textSize="14sp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/descriptionTv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:text="TextView"
+        android:textSize="18sp" />
+
+</LinearLayout>
