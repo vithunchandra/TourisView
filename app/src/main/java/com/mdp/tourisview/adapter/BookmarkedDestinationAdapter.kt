@@ -35,6 +35,9 @@ class BookmarkedDestinationAdapter(
             binding.bookmarkButton.setOnClickListener {
                 action.bookmarkClicked(item)
             }
+            binding.root.setOnClickListener{
+                action.onClick(item)
+            }
         }
     }
 
@@ -64,6 +67,7 @@ class BookmarkedDestinationAdapter(
     }
 
     interface Action{
+        fun onClick(destination: RoomDestination)
         fun bookmarkClicked(destination: RoomDestination)
     }
 }

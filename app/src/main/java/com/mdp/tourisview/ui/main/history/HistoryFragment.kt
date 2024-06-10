@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mdp.tourisview.R
 import com.mdp.tourisview.adapter.DestinationAdapter
@@ -16,6 +17,8 @@ import com.mdp.tourisview.data.local.room.model.RoomDestination
 import com.mdp.tourisview.data.mock.server.model.MockServerDestination
 import com.mdp.tourisview.databinding.FragmentHistoryBinding
 import com.mdp.tourisview.databinding.FragmentHomeBinding
+import com.mdp.tourisview.ui.main.destination.DestinationFragmentData
+import com.mdp.tourisview.ui.main.home.HomeFragmentDirections
 import com.mdp.tourisview.ui.main.home.HomeFragmentViewModel
 import com.mdp.tourisview.ui.main.home.HomeFragmentViewModelFactory
 import com.mdp.tourisview.ui.main.map.view_location.DestinationMapLocation
@@ -59,7 +62,11 @@ class HistoryFragment : Fragment() {
         adapter = HistoryDestinationAdapter(
             object: HistoryDestinationAdapter.Action {
                 override fun onClick(mockServerDestination: MockServerDestination) {
+                    val action = HistoryFragmentDirections.actionHistoryFragmentToDestinationFragment(
+                        DestinationFragmentData.fromMockServerDestination(mockServerDestination)
+                    )
 
+                    findNavController().navigate(action)
                 }
 
                 override fun bookmarkClick(mockServerDestination: MockServerDestination) {

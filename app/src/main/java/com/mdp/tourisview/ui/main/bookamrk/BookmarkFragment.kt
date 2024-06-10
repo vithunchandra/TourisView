@@ -6,11 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.mdp.tourisview.adapter.BookmarkedDestinationAdapter
 import com.mdp.tourisview.data.local.room.model.RoomDestination
 import com.mdp.tourisview.databinding.FragmentBookmarkBinding
+import com.mdp.tourisview.ui.main.destination.DestinationFragmentData
+import com.mdp.tourisview.ui.main.history.HistoryFragmentDirections
 
 class BookmarkFragment : Fragment() {
     private lateinit var binding: FragmentBookmarkBinding
@@ -40,6 +43,13 @@ class BookmarkFragment : Fragment() {
             object: BookmarkedDestinationAdapter.Action{
                 override fun bookmarkClicked(destination: RoomDestination) {
                     viewModel.toggleBookmark(destination.id)
+                }
+                override fun onClick(destination: RoomDestination) {
+                    val action = BookmarkFragmentDirections.actionBookmarkFragmentToDestinationFragment(
+                        DestinationFragmentData.fromRoomDestination(destination)
+                    )
+
+                    findNavController().navigate(action)
                 }
             }
         )
