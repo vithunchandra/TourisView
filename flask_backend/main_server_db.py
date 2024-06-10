@@ -230,8 +230,8 @@ def get_all_destinations() :
         
         
         # text_embeddings = model_text.encode([search_name])
-        # cos_sim_txt_img = util.cos_sim(text_embeddings, all_img_embeddings)[0]
-        # cos_sim_txt_txt = util.cos_sim(text_embeddings, all_desc_embeddings)[0]
+        # cos_sim_txt_img = util.cos_sim(text_embeddings, app.config['all_img_embeddings'])[0]
+        # cos_sim_txt_txt = util.cos_sim(text_embeddings, app.config['all_desc_embeddings'])[0]
         
         # destination_sim_dict = get_destination_sim_dict(all_image_destination_list, all_desc_destination_list, cos_sim_txt_img, cos_sim_txt_txt)
         # destination_idx, similarity_list_now = sim_combine_destination_sim_dict(destination_sim_dict)
@@ -282,6 +282,23 @@ def get_all_destinations() :
     temp_res = json.dumps(temp_res)
     return temp_res
 
+@app.route('/getAllHistory', methods=['GET'])
+def get_all_history() :
+    email_now = request.args.get('email')
+    all_destinations = requests.get(f"http://localhost:{PORT}/getAllDestinations").text
+    all_destinations = json.loads(all_destinations)
+    
+    all_history = []
+    for dest in all_destinations :
+        dest_id = dest["id"]
+        poster_now_email_query = f"SELECT email from users where user_id = (SELECT destinations.destination_poster from destinations where destinations.destination_id = {dest_id})"
+        poster_now_email = execute_select_with_cursor(mycursor, poster_now_email_query)[0]['email']
+        print(dest_id, poster_now_email)
+        if poster_now_email == email_now :
+            all_history.append(dest)
+    all_history = json.dumps(all_history)
+    
+    return all_history
 
 if __name__ == "__main__":
     ngrok_tunnel = ngrok.connect(PORT, domain= DOMAIN_NOW)  # Assuming Flask app is running on port 5000
