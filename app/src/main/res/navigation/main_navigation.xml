@@ -79,5 +79,9 @@
         android:id="@+id/destinationFragment"
         android:name="com.mdp.tourisview.ui.main.destination.DestinationFragment"
         android:label="fragment_destination"
-        tools:layout="@layout/fragment_destination" />
+        tools:layout="@layout/fragment_destination" >
+        <argument
+            android:name="destination"
+            app:argType="com.mdp.tourisview.ui.main.destination.DestinationFragmentData" />
+    </fragment>
 </navigation>

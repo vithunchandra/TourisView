@@ -8,11 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mdp.tourisview.R
 import com.mdp.tourisview.adapter.DestinationAdapter
 import com.mdp.tourisview.data.local.room.model.RoomDestination
 import com.mdp.tourisview.databinding.FragmentHomeBinding
+import com.mdp.tourisview.ui.main.destination.DestinationFragmentData
 import com.mdp.tourisview.ui.main.map.view_location.DestinationMapLocation
 
 class HomeFragment : Fragment(){
@@ -43,7 +45,11 @@ class HomeFragment : Fragment(){
         adapter = DestinationAdapter(
             object: DestinationAdapter.Action {
                 override fun onClick(roomDestination: RoomDestination) {
+                    val action = HomeFragmentDirections.actionHomeFragmentToDestinationFragment(
+                        DestinationFragmentData.fromRoomDestination(roomDestination)
+                    )
 
+                    findNavController().navigate(action)
                 }
 
                 override fun bookmarkClick(roomDestination: RoomDestination) {
