@@ -108,8 +108,8 @@ class DestinationRepository private constructor(
 
     suspend fun fetchDestinationsFromServer(): ApiResult<String>{
         return try {
-            val result = MockServer.getAllDestinations()
-//            val result = apiService.getAllDestinations()
+//            val result = MockServer.getAllDestinations()
+            val result = apiService.getAllDestinations()
             destinationDao.deleteDestinations()
             destinationDao.insertAllDestinations(
                 result.map { it.convertToLocalDestination() }
@@ -122,8 +122,8 @@ class DestinationRepository private constructor(
 
     suspend fun getAllHistory(email:String):ApiResult<List<MockServerDestination>>{
         return try {
-            val result = MockServer.getAllHistory(email)
-//            val result = apiService.getAllHistory(email)
+//            val result = MockServer.getAllHistory(email)
+            val result = apiService.getAllHistory(email)
             ApiResult.Success(result)
         }catch(exc: Exception) {
             ApiResult.Error("fetch failed")

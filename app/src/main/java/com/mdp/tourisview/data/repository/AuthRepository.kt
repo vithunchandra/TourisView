@@ -16,9 +16,9 @@ class AuthRepository private constructor(
         displayName: String
     ): ApiResult<SignUpResult>{
         return try{
-//            val result = apiService.register(email, password, displayName)
+            val result = apiService.register(email, password, displayName)
 //            val result = MockDB.register(email, password, displayName)
-            val result = MockServer.register(email, password, displayName)
+//            val result = MockServer.register(email, password, displayName)
             ApiResult.Success(result)
         }catch(exc: Exception){
             ApiResult.Error(exc.message ?: "UnknownError")
@@ -38,9 +38,9 @@ class AuthRepository private constructor(
                     )
                 )
             }else{
-//                val result = apiService.login(email, password)
+                val result = apiService.login(email, password)
 //                val result = MockDB.login(email, password)
-                val result = MockServer.login(email, password)
+//                val result = MockServer.login(email, password)
                 ApiResult.Success(result)
             }
         }catch(exc: Exception){
