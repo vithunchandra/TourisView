@@ -21,7 +21,7 @@ interface DestinationDao {
     suspend fun insertAllDestinations(roomDestinations: List<RoomDestination>)
 
     @Query("UPDATE destination SET isBookmarked = NOT isBookmarked WHERE id = :id")
-    suspend fun toggleBookmark(id: String)
+    suspend fun toggleBookmark(id: Int)
 
     @Query("DELETE FROM destination")
     suspend fun deleteDestinations()

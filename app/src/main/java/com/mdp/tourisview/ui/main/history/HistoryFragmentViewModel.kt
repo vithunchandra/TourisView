@@ -32,8 +32,12 @@ class HistoryFragmentViewModel(
 
     val viewState: LiveData<HistoryFragmentViewState> = _viewState
 
-    fun toggleBookmark(id: String){
-        viewModelScope.launch { destinationRepository.toggleDestinationBookmark(id) }
+    fun toggleBookmark(id: Int){
+        val session = runBlocking {
+            sessionRepository.getSession().first()
+        }
+        val email = session.email
+        viewModelScope.launch { destinationRepository.toggleDestinationBookmark(id, email) }
     }
 
     fun getAllHistory(){

@@ -1,24 +1,18 @@
 package com.mdp.tourisview.data.repository
 
-import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
-import com.google.android.gms.maps.model.LatLng
 import com.mdp.tourisview.data.api.ApiService
-import com.mdp.tourisview.data.api.model.UploadDestinationResult
 import com.mdp.tourisview.data.local.room.dao.DestinationDao
 import com.mdp.tourisview.data.local.room.model.RoomDestination
-import com.mdp.tourisview.data.local.room.model.RoomReview
 import com.mdp.tourisview.data.mock.server.MockServer
 import com.mdp.tourisview.data.mock.server.model.MockServerDestination
 import com.mdp.tourisview.data.mock.server.model.MockServerReview
 import com.mdp.tourisview.data.mock.server.model.convertToLocalDestination
 import com.mdp.tourisview.util.ApiResult
-import com.mdp.tourisview.util.getAddress
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.util.Date
-import java.util.UUID
 
 class DestinationRepository private constructor(
     private val apiService: ApiService,
@@ -73,12 +67,13 @@ class DestinationRepository private constructor(
                 latitude = result.data.latitude,
                 longitude = result.data.longitude,
                 locationName = result.data.locationName,
-                createdAt = Date().toString(), false
+                createdAt = Date().toString(), false,
+                avgStar = 0.0
             )
             destinationDao.insertDestination(roomDestination)
             ApiResult.Success("Destination added successfully")
         }catch(exc: Exception){
-            ApiResult.Error("Failed to add destination ${exc.toString()}")
+            ApiResult.Error("Failed to add destination ${exc.message}")
         }
     }
 
@@ -86,11 +81,20 @@ class DestinationRepository private constructor(
         destinationDao.insertAllDestinations(roomDestinations)
     }
 
-    suspend fun toggleDestinationBookmark(id: String): ApiResult<String>{
+    suspend fun toggleDestinationBookmark(id: Int, email: String): ApiResult<String>{
         return try {
             destinationDao.toggleBookmark(id)
-            MockServer.toggleDestinationBookmark(id)
+            apiService.toggleBookmark(email, id)
             ApiResult.Success("Bookmarked success")
+        }catch(exc: Exception){
+            ApiResult.Error("Failed to bookmarked the destination")
+        }
+    }
+
+    suspend fun toggleBookmark(email: String, destinationId: Int): ApiResult<Boolean>{
+        return try{
+            val result = apiService.toggleBookmark(email, destinationId)
+            return ApiResult.Success(result.isBookmarked)
         }catch(exc: Exception){
             ApiResult.Error("Failed to bookmarked the destination")
         }
@@ -108,17 +112,21 @@ class DestinationRepository private constructor(
         return destinationDao.getBookmarkedDestination()
     }
 
-    suspend fun fetchDestinationsFromServer(): ApiResult<String>{
+    suspend fun fetchDestinationsFromServer(email: String): ApiResult<String>{
         return try {
 //            val result = MockServer.getAllDestinations()
-            val result = apiService.getAllDestinations()
+            val result = apiService.getAllDestinations(email = email)
             destinationDao.deleteDestinations()
             destinationDao.insertAllDestinations(
                 result.map { it.convertToLocalDestination() }
             )
+            Log.d("Test Fetching", "Hallo2")
+
             ApiResult.Success("Sync success")
         }catch(exc: Exception) {
-            ApiResult.Error("Sync failed")
+            exc.message?.let { Log.d("Test Fetching", it) }
+
+            ApiResult.Error(exc.message ?: "Sync Failed")
         }
     }
 
@@ -133,10 +141,10 @@ class DestinationRepository private constructor(
     }
 
     suspend fun insertReview(
-        reviewer: String, destinationId: String, reviewText: String, star: Int
+        reviewer: String, destinationId: Int, reviewText: String, star: Int
     ): ApiResult<String>{
         Log.i("reviewer", reviewer)
-        Log.i("destinationID", destinationId)
+        Log.i("destinationID", destinationId.toString())
         Log.i("reviewText", reviewText)
         Log.i("star", star.toString())
 
@@ -155,11 +163,11 @@ class DestinationRepository private constructor(
         }
     }
 
-    suspend fun getAllReviews(destinationId: String): ApiResult<List<MockServerReview>>{
+    suspend fun getAllReviews(destinationId: Int): ApiResult<List<MockServerReview>>{
 //        return destinationDao.getReviews(destinationId)
         return try {
 //            val result = MockServer.getAllHistory(email)
-            val result = apiService.getAllReview(destinationId.toInt())
+            val result = apiService.getAllReview(destinationId)
             ApiResult.Success(result)
         }catch(exc: Exception) {
             ApiResult.Error("fetch failed")

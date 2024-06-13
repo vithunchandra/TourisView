@@ -27,6 +27,7 @@ workRuntimeKtx = "2.9.0"
 legacySupportV4 = "1.0.0"
 lifecycleViewmodelKtx = "2.6.1"
 fragmentKtx = "1.5.6"
+databindingRuntime = "8.4.2"
 
 [libraries]
 androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cameraxVersion" }
@@ -61,6 +62,7 @@ play-services-maps = { group = "com.google.android.gms", name = "play-services-m
 androidx-legacy-support-v4 = { group = "androidx.legacy", name = "legacy-support-v4", version.ref = "legacySupportV4" }
 androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
 androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragmentKtx" }
+androidx-databinding-runtime = { group = "androidx.databinding", name = "databinding-runtime", version.ref = "databindingRuntime" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

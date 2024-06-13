@@ -7,19 +7,29 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.mdp.tourisview.data.local.room.model.RoomDestination
 import com.mdp.tourisview.data.repository.DestinationRepository
+import com.mdp.tourisview.data.repository.SessionRepository
 import com.mdp.tourisview.di.Injection
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.lang.IllegalArgumentException
 
 class DestinationMapLocationViewModel(
-    private val destinationRepository: DestinationRepository
+    private val destinationRepository: DestinationRepository,
+    private val sessionRepository: SessionRepository
 ): ViewModel() {
 
     init {
         fetchAllDestinations()
     }
     fun fetchAllDestinations(){
-        viewModelScope.launch { destinationRepository.fetchDestinationsFromServer() }
+        viewModelScope.launch {
+            val session = runBlocking {
+                sessionRepository.getSession().first()
+            }
+            val email = session.email
+            destinationRepository.fetchDestinationsFromServer(email)
+        }
     }
 
     fun getAllDestinations(name: String? = null): LiveData<List<RoomDestination>> {
@@ -32,14 +42,16 @@ class DestinationMapLocationViewModel(
 }
 
 class DestinationMapLocationViewModelFactory private constructor(
-    private val destinationRepository: DestinationRepository
+    private val destinationRepository: DestinationRepository,
+    private val sessionRepository: SessionRepository
 ): ViewModelProvider.NewInstanceFactory(){
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return when {
             modelClass.isAssignableFrom(DestinationMapLocationViewModel::class.java) -> {
                 DestinationMapLocationViewModel(
-                    destinationRepository
+                    destinationRepository,
+                    sessionRepository
                 ) as T
             }
             else -> throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
@@ -54,7 +66,8 @@ class DestinationMapLocationViewModelFactory private constructor(
             if(INSTANCE == null){
                 synchronized(DestinationMapLocationViewModelFactory::class.java){
                     INSTANCE ?: DestinationMapLocationViewModelFactory(
-                        Injection.provideDestinationRepository(context)
+                        Injection.provideDestinationRepository(context),
+                        Injection.provideSessionRepository(context)
                     ).also { INSTANCE = it }
                 }
             }

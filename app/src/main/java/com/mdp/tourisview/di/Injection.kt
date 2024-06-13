@@ -7,7 +7,6 @@ import com.mdp.tourisview.data.local.pref.dataStore
 import com.mdp.tourisview.data.local.room.AppDatabase
 import com.mdp.tourisview.data.repository.AuthRepository
 import com.mdp.tourisview.data.repository.DestinationRepository
-import com.mdp.tourisview.data.repository.NetworkRepository
 import com.mdp.tourisview.data.repository.SessionRepository
 
 object Injection{
@@ -27,8 +26,8 @@ object Injection{
         return DestinationRepository.getInstance(apiService, database.destinationDao())
     }
 
-    fun provideNetworkRepository(): NetworkRepository{
-        val apiService = ApiConfig.getApiService()
-        return NetworkRepository.getInstance(apiService)
-    }
+//    fun provideNetworkRepository(): NetworkRepository{
+//        val apiService = ApiConfig.getApiService()
+//        return NetworkRepository.getInstance(apiService)
+//    }
 }

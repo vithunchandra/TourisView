@@ -73,7 +73,7 @@ object MockDB {
             name = name, imageUrl = image,
             description = description, latitude = latitude,
             longitude = longitude, locationName = "location not found", createdAt = Date().toString(),
-            poster = poster, id = "DES_${UUID.randomUUID()}", isBookmarked = false
+            poster = poster, id = Random.nextInt(), isBookmarked = false, avgStar = 5.0
         )
         destinations.add(newDestination)
         return UploadDestinationResult(

@@ -43,7 +43,7 @@ object MockServer {
                 }
                 withContext(Dispatchers.Main){
                     val destination = MockServerDestination(
-                        id = "DES_${UUID.randomUUID()}",
+                        id = Random.nextInt(),
                         poster = user.email,
                         name = "${user.displayName} Destination",
                         imageUrl = "https://picsum.photos/id/${Random.nextInt(1, 300)}/200/300",
@@ -52,7 +52,8 @@ object MockServer {
                         longitude = longitude,
                         locationName = location.await(),
                         createdAt = Date().toString(),
-                        isBookmarked = Random.nextBoolean()
+                        isBookmarked = Random.nextBoolean(),
+                        avgStar = 5.0
                     )
                     destinations.add(destination)
                 }
@@ -91,7 +92,7 @@ object MockServer {
     ): UploadDestinationResult {
         delay(2000)
         val newDestination = MockServerDestination(
-            id = "DES_${UUID.randomUUID()}",
+            id = Random.nextInt(),
             name = name, imageUrl = image,
             description = description,
             latitude = latitude,
@@ -99,7 +100,8 @@ object MockServer {
             locationName = locationName,
             poster = poster,
             createdAt = Date().toString(),
-            isBookmarked = false
+            isBookmarked = false,
+            avgStar = 5.0
         )
         destinations.add(newDestination)
         return UploadDestinationResult(
@@ -108,7 +110,7 @@ object MockServer {
         )
     }
 
-    suspend fun toggleDestinationBookmark(id: String){
+    suspend fun toggleDestinationBookmark(id: Int){
         delay(500)
         val destination = destinations.find {
             it.id == id

@@ -3,7 +3,7 @@ package com.mdp.tourisview.data.mock.database.model
 import com.mdp.tourisview.data.mock.server.model.MockServerDestination
 
 data class MockDBDestination(
-    val id: String,
+    val id: Int,
     val poster: String,
     val name: String,
     val imageUrl: String,
@@ -12,13 +12,14 @@ data class MockDBDestination(
     val longitude: Double,
     val locationName: String,
     val createdAt: String,
-    var isBookmarked: Boolean
+    var isBookmarked: Boolean,
+    var avgStar: Double
 )
 
 fun MockDBDestination.convertToMockServerDestination(): MockServerDestination{
     return MockServerDestination(
         id, poster, name, imageUrl, description,
         latitude, longitude, locationName = locationName,
-        createdAt, false
+        createdAt, false, avgStar
     )
 }

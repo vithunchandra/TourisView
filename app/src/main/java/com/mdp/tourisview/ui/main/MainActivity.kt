@@ -33,9 +33,9 @@ class MainActivity : AppCompatActivity() {
         ActivityResultContracts.RequestPermission()
     ){ isGranted ->
         if(isGranted){
-            showToast("Permissions granted")
+//            showToast("Permissions granted")
         }else{
-            showToast("Permissions rejected")
+//            showToast("Permissions rejected")
         }
     }
 
@@ -49,9 +49,9 @@ class MainActivity : AppCompatActivity() {
                         Manifest.permission.ACCESS_BACKGROUND_LOCATION
                     )
                 }
-                showToast("${permission.key} permission granted")
+//                showToast("${permission.key} permission granted")
             }else{
-                showToast("${permission.key} permission rejected")
+//                showToast("${permission.key} permission rejected")
             }
         }
     }

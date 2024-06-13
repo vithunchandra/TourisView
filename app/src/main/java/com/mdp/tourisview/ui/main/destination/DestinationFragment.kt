@@ -1,7 +1,6 @@
 package com.mdp.tourisview.ui.main.destination
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,10 +12,8 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.button.MaterialButton
 import com.mdp.tourisview.R
-import com.mdp.tourisview.adapter.DestinationAdapter
 import com.mdp.tourisview.adapter.ReviewAdapter
 import com.mdp.tourisview.databinding.FragmentDestinationBinding
-import com.mdp.tourisview.ui.main.history.HistoryFragmentViewModelFactory
 import com.squareup.picasso.Picasso
 
 class DestinationFragment : Fragment() {

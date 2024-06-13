@@ -4,6 +4,7 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelable.Param
 import com.mdp.tourisview.data.api.model.InsertReviewResult
 import com.mdp.tourisview.data.api.model.SignInResult
 import com.mdp.tourisview.data.api.model.SignUpResult
+import com.mdp.tourisview.data.api.model.ToggleBookmarkResult
 import com.mdp.tourisview.data.api.model.UploadDestinationResult
 import com.mdp.tourisview.data.mock.server.model.MockServerDestination
 import com.mdp.tourisview.data.mock.server.model.MockServerReview
@@ -34,10 +35,10 @@ interface ApiService {
     ): SignInResult
     
 
-//    @FormUrlEncoded
     @GET("getAllDestinations")
     suspend fun getAllDestinations(
         @Query("name") name: String?=null,
+        @Query("email") email: String
     ): List<MockServerDestination>
 
     @GET("getAllHistory")
@@ -70,4 +71,11 @@ interface ApiService {
         @Field("review") review: String,
         @Field("star") star: Int
     ): InsertReviewResult
+
+    @FormUrlEncoded
+    @POST("toggleBookmark")
+    suspend fun toggleBookmark(
+        @Field("reviewer") reviewer: String,
+        @Field("destination_id") destinationId: Int
+    ): ToggleBookmarkResult
 }

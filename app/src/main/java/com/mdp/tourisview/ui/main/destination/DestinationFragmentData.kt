@@ -6,7 +6,7 @@ import com.mdp.tourisview.data.mock.server.model.MockServerDestination
 import java.io.Serializable
 
 data class DestinationFragmentData(
-    val id: String,
+    val id: Int,
     val poster: String,
     val name: String,
     val imageUrl: String,

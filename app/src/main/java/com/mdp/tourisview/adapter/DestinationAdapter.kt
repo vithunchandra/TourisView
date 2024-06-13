@@ -38,6 +38,7 @@ class DestinationAdapter(
             binding.bookmarkButton.setOnClickListener {
                 action.bookmarkClick(roomDestination)
             }
+            binding.starTv.text = roomDestination.avgStar.toString()
         }
     }
 

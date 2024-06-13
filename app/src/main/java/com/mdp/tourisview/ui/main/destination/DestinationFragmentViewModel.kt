@@ -35,10 +35,14 @@ class DestinationFragmentViewModel(
     val viewState: LiveData<DestinationFragmentViewState> = _viewState
 
     fun toggleBookmark(){
-        viewModelScope.launch { destinationRepository.toggleDestinationBookmark(data.value!!.id) }
+        val session = runBlocking {
+            sessionRepository.getSession().first()
+        }
+        val email = session.email
+        viewModelScope.launch { destinationRepository.toggleDestinationBookmark(data.value!!.id, email) }
     }
 
-    fun getAllReview(destinationID: String){
+    fun getAllReview(destinationID: Int){
         viewModelScope.launch {
             _viewState.value = _viewState.value?.copy(
                 isLoading = true, isSuccess = false, isError = false
@@ -62,7 +66,7 @@ class DestinationFragmentViewModel(
         }
     }
 
-    fun sendReview(destinationId: String, reviewText: String, star: Int){
+    fun sendReview(destinationId: Int, reviewText: String, star: Int){
         viewModelScope.launch {
             _viewState.value = _viewState.value?.copy(
                 isLoading = true, isSuccess = false, isError = false

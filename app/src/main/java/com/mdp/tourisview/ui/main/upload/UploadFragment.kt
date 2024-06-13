@@ -143,9 +143,11 @@ class UploadFragment : Fragment() {
 
             if(state.isLoading){
                 binding.progressBar.visibility = View.VISIBLE
+                binding.uploadButton.isEnabled = false
                 binding.uploadButton.text = ""
             }else{
                 binding.progressBar.visibility = View.INVISIBLE
+                binding.uploadButton.isEnabled = true
                 binding.uploadButton.text = getString(R.string.upload)
             }
 
