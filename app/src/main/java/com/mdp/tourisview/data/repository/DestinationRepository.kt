@@ -1,6 +1,7 @@
 package com.mdp.tourisview.data.repository
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.google.android.gms.maps.model.LatLng
 import com.mdp.tourisview.data.api.ApiService
@@ -10,6 +11,7 @@ import com.mdp.tourisview.data.local.room.model.RoomDestination
 import com.mdp.tourisview.data.local.room.model.RoomReview
 import com.mdp.tourisview.data.mock.server.MockServer
 import com.mdp.tourisview.data.mock.server.model.MockServerDestination
+import com.mdp.tourisview.data.mock.server.model.MockServerReview
 import com.mdp.tourisview.data.mock.server.model.convertToLocalDestination
 import com.mdp.tourisview.util.ApiResult
 import com.mdp.tourisview.util.getAddress
@@ -131,24 +133,37 @@ class DestinationRepository private constructor(
     }
 
     suspend fun insertReview(
-        destinationId: String, reviewText: String, star: Int
+        reviewer: String, destinationId: String, reviewText: String, star: Int
     ): ApiResult<String>{
+        Log.i("reviewer", reviewer)
+        Log.i("destinationID", destinationId)
+        Log.i("reviewText", reviewText)
+        Log.i("star", star.toString())
+
         return try{
-            val roomReview = RoomReview(
-                id = "REV_${UUID.randomUUID()}",
-                destinationId = destinationId,
-                reviewText = reviewText,
-                star = star
-            )
-            destinationDao.insertReview(roomReview)
+//            val roomReview = RoomReview(
+//                id = "REV_${UUID.randomUUID()}",
+//                destinationId = destinationId,
+//                reviewText = reviewText,
+//                star = star
+//            )
+            apiService.insertReview(reviewer, destinationId.toInt(), reviewText, star)
+//            destinationDao.insertReview(roomReview)
             ApiResult.Success("Review added successfully")
         }catch(exc: Exception){
             ApiResult.Error("Failed to add review")
         }
     }
 
-    suspend fun getReviews(destinationId: String): LiveData<List<RoomReview>>{
-        return destinationDao.getReviews(destinationId)
+    suspend fun getAllReviews(destinationId: String): ApiResult<List<MockServerReview>>{
+//        return destinationDao.getReviews(destinationId)
+        return try {
+//            val result = MockServer.getAllHistory(email)
+            val result = apiService.getAllReview(destinationId.toInt())
+            ApiResult.Success(result)
+        }catch(exc: Exception) {
+            ApiResult.Error("fetch failed")
+        }
     }
 
     companion object{

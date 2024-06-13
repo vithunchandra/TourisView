@@ -19,7 +19,7 @@ data class DestinationFragmentData(
 ): Serializable{
 
     fun getLocDescription():String{
-        return "$locationName \nlat: $latitude \nlong: $longitude"
+        return locationName + " ( lat: %.5f".format(latitude) + ", long: %.5f".format(longitude) + " )"
     }
 
     fun getPosterDescription():String{

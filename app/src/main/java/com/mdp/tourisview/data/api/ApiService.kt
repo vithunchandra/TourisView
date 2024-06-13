@@ -1,10 +1,12 @@
 package com.mdp.tourisview.data.api
 
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable.Param
+import com.mdp.tourisview.data.api.model.InsertReviewResult
 import com.mdp.tourisview.data.api.model.SignInResult
 import com.mdp.tourisview.data.api.model.SignUpResult
 import com.mdp.tourisview.data.api.model.UploadDestinationResult
 import com.mdp.tourisview.data.mock.server.model.MockServerDestination
+import com.mdp.tourisview.data.mock.server.model.MockServerReview
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Field
@@ -54,4 +56,18 @@ interface ApiService {
         @Part("locationName") locationName: RequestBody,
         @Part("poster") poster: RequestBody,
     ): UploadDestinationResult
+
+    @GET("getAllReview")
+    suspend fun getAllReview(
+        @Query("destinationId") destinationId: Int
+    ): List<MockServerReview>
+
+    @FormUrlEncoded
+    @POST("insertReview")
+    suspend fun insertReview(
+        @Field("reviewer") reviewer: String,
+        @Field("destination_id") destination_id: Int,
+        @Field("review") review: String,
+        @Field("star") star: Int
+    ): InsertReviewResult
 }
