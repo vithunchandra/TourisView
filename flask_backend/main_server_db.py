@@ -42,7 +42,7 @@ myresult_destination = mycursor.fetchall()
 all_desc_list = []
 all_desc_destination_list = []
 for destination_data in myresult_destination:
-    desc_now = destination_data[4]
+    desc_now = destination_data[4].replace("/n","\n")
     desc_now_list = desc_now.split("\n\n")
     for desc_now_temp in desc_now_list :
         all_desc_list.append(desc_now_temp)
@@ -216,53 +216,65 @@ def get_all_destinations() :
     sql_query = "SELECT destination_id as id, `destination_name` as name, ifnull(`destination_latitude`,44) as latitude, ifnull(`destination_longtitude`,66) as longtitude, `destination_description` as description, (SELECT display_name from users where users.user_id = destination_poster) as poster FROM `destinations` WHERE 1 order by destination_id desc"
     temp_res = execute_select_with_cursor(mycursor, sql_query)
     
-
+    user_email = request.args.get('email')
     search_name = request.args.get('name')
     print(search_name)
     if (search_name == None) or  (search_name == ""):
         search_name = ""
     else :
-        temp_res2 = []
-        for now_res in temp_res :
-            if search_name in str(now_res['name']) :
-                temp_res2.append(now_res)
-        temp_res = temp_res2  
-        
-        
-        # text_embeddings = model_text.encode([search_name])
-        # cos_sim_txt_img = util.cos_sim(text_embeddings, app.config['all_img_embeddings'])[0]
-        # cos_sim_txt_txt = util.cos_sim(text_embeddings, app.config['all_desc_embeddings'])[0]
-        
-        # destination_sim_dict = get_destination_sim_dict(all_image_destination_list, all_desc_destination_list, cos_sim_txt_img, cos_sim_txt_txt)
-        # destination_idx, similarity_list_now = sim_combine_destination_sim_dict(destination_sim_dict)
-        # similarity_list_now = torch.as_tensor(similarity_list_now).float()
-        # values, indices = similarity_list_now = similarity_list_now.sort(descending=True)
-        # indices = indices[0:5].detach().cpu().numpy()
-        # indices = [destination_idx[int(ind)] for ind in  indices]
-
-        # print(type(temp_res))
         # temp_res2 = []
-        # for ind in indices :
-        #     for now_res in temp_res :
-        #         print("==================================================")
-        #         print(now_res)
-        #         print("==================================================")
-        #         now_res_id = int(now_res['id'])
-        #         print(now_res_id)
+        # for now_res in temp_res :
+        #     if search_name in str(now_res['name']) :
+        #         temp_res2.append(now_res)
+        # temp_res = temp_res2  
+        
+        
+        text_embeddings = model_text.encode([search_name])
+        cos_sim_txt_img = util.cos_sim(text_embeddings, app.config['all_img_embeddings'])[0]
+        cos_sim_txt_txt = util.cos_sim(text_embeddings, app.config['all_desc_embeddings'])[0]
+        
+        destination_sim_dict = get_destination_sim_dict(all_image_destination_list, all_desc_destination_list, cos_sim_txt_img, cos_sim_txt_txt)
+        destination_idx, similarity_list_now = sim_combine_destination_sim_dict(destination_sim_dict)
+        similarity_list_now = torch.as_tensor(similarity_list_now).float()
+        values, indices = similarity_list_now = similarity_list_now.sort(descending=True)
+        indices = indices[0:5].detach().cpu().numpy()
+        indices = [destination_idx[int(ind)] for ind in  indices]
+
+        print(type(temp_res))
+        temp_res2 = []
+        for ind in indices :
+            for now_res in temp_res :
+                print("==================================================")
+                print(now_res)
+                print("==================================================")
+                now_res_id = int(now_res['id'])
+                print(now_res_id)
                 
-        #         if now_res_id == ind :
-        #             temp_res2.append(now_res)
-        # temp_res = temp_res2        
+                if now_res_id == ind :
+                    temp_res2.append(now_res)
+        temp_res = temp_res2        
     
 
      
     for i in range(len(temp_res)) :
         temp_res[i].update({"id":str(temp_res[i]['id'])})
-        temp_res[i].update({"isBookmarked":False})
+    
+        bookmark_now = False
+        if not (user_email == None) and not (user_email == ""):
+            check_bookmark_query = f"SELECT count(*) as cnt FROM user_destinations where user_id = (SELECT user_id from users where email = '{user_email}') and destination_id = {temp_res[i]['id']}"
+            check_bookmark = execute_select_with_cursor(mycursor, check_bookmark_query)[0]['cnt']
+            bookmark_now = check_bookmark >= 1
+        
+        temp_res[i].update({"isBookmarked":bookmark_now})
         temp_res[i].update({"locationName":temp_res[i]['name']})
         current_time = datetime.now()
         time_string = current_time.strftime("%d/%m/%Y")  # Format as DD/MM/YYYY
-        temp_res[i].update({"createdAt":time_string})
+        temp_res[i].update({"createdAt":time_string}) 
+        #description 
+        temp_res[i].update({"description":temp_res[i]['description'].replace("/n","\n")}) 
+        star_avg_query = f"SELECT ifnull(AVG(star),0) as avg_star from reviews where destination_id = {temp_res[i]['id']}"
+        star_avg = execute_select_with_cursor(mycursor, star_avg_query)[0]['avg_star']
+        temp_res[i].update({"avgStar":float(star_avg)})
         
         dest_now = temp_res[i]
         select_destination_img = f"""SELECT * FROM `images` WHERE destination_id = (SELECT destination_id from destinations where destination_name = '{dest_now["name"]}') LIMIT 1"""
@@ -285,7 +297,11 @@ def get_all_destinations() :
 @app.route('/getAllHistory', methods=['GET'])
 def get_all_history() :
     email_now = request.args.get('email')
-    all_destinations = requests.get(f"http://localhost:{PORT}/getAllDestinations").text
+    query_params = {
+        "email": email_now,
+    }
+
+    all_destinations = requests.get(f"http://localhost:{PORT}/getAllDestinations",params=query_params).text
     all_destinations = json.loads(all_destinations)
     
     all_history = []
@@ -299,6 +315,54 @@ def get_all_history() :
     all_history = json.dumps(all_history)
     
     return all_history
+
+@app.route('/toggleBookmark', methods=['POST'])
+def toggle_bookmark() :
+    user_email = request.form.get('reviewer')
+    destination_id = request.form.get('destination_id')
+    query_now = f"SELECT count(*) as cnt FROM user_destinations where user_id = (SELECT user_id from users where email = '{user_email}') and destination_id = {destination_id}"
+    bookmark_now = execute_select_with_cursor(mycursor, query_now)
+    
+    if(bookmark_now[0]['cnt'] == 0) :
+        query_now = f"INSERT INTO `user_destinations`(`user_id`, `destination_id`) VALUES ((SELECT user_id from users where email = '{user_email}') ,{destination_id})"
+    else :
+        query_now = f"DELETE FROM `user_destinations` WHERE user_id = (SELECT user_id from users where email = '{user_email}')  and destination_id = {destination_id}"
+    temp_res = execute_query(mydb, mycursor, query_now)
+    return temp_res
+
+@app.route('/insertReview', methods=['POST'])
+def write_review() :
+    user_email = request.form.get('reviewer')
+    destination_id = request.form.get('destination_id')
+    review = request.form.get('review')
+    star = request.form.get('star')
+    val = (user_email, destination_id, review, star)
+    
+    
+    query_now = "INSERT INTO `reviews`(`reviewer`, `destination_id`, `review`, `star`) VALUES ((SELECT user_id from users where email = %s),%s,%s,%s)"
+    print(query_now, val)
+    mydb.reconnect()
+    mycursor.execute(query_now, val)
+    mydb.commit()
+    
+    selected_data_query = f"SELECT review_id, (SELECT display_name from users where user_id = reviewer) as reviewer, destination_id, review, star from reviews where destination_id = {destination_id} and reviewer = (select user_id from users where email =  '{user_email}')"
+    selected_data = execute_select_with_cursor(mycursor, selected_data_query)[0]
+    
+    review_result = {
+        "message" : "Suceed!",
+        "data" : selected_data
+    }
+    
+    return review_result
+
+@app.route('/getAllReview', methods=['GET'])
+def get_all_review() :
+    destination_id = request.args.get('destinationId')
+    query_now = f"SELECT review_id, (SELECT display_name from users where user_id = reviewer) as reviewer, destination_id, review, star from reviews where destination_id = {destination_id}"
+    print("========================= GET ALL REVIEW =================================")
+    print(query_now)
+    print("==========================================================================")
+    return execute_select_with_cursor_as_json(mycursor,query_now)
 
 if __name__ == "__main__":
     ngrok_tunnel = ngrok.connect(PORT, domain= DOMAIN_NOW)  # Assuming Flask app is running on port 5000
